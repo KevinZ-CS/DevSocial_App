@@ -1,6 +1,7 @@
 from django.db import models
 from api.models import User
 from api.models import Post
+from django.utils.translation import gettext_lazy as _
 
 def generate_error_messages(attribute, messages):
     error_dict = {}

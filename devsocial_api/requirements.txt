@@ -9,3 +9,4 @@ python-dotenv
 django-storages
 boto3
 bcrypt
+pillow
