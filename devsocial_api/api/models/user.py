@@ -22,10 +22,10 @@ password_error_messages = generate_error_messages('password', {
     'mismatch': _('Password and confirm password do not match.')
 })
 
-email_error_messages = generate_error_messages('email', {
-    'invalid': _('Enter a valid email address.'),
-    'unique': _('This email address is already registered.')
-})
+# email_error_messages = generate_error_messages('email', {
+#     'invalid': _('Enter a valid email address.'),
+#     'unique': _('This email address is already registered.')
+# })
 
 def validate_image(value):
     valid_formats = ('jpeg', 'jpg', 'png', 'gif')
@@ -36,62 +36,64 @@ class User(models.Model):
     first_name = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('first name', blank_null_error_messages)
+        # error_messages=generate_error_messages('first name', blank_null_error_messages)
     )
     last_name = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('last name', blank_null_error_messages)
+        # error_messages=generate_error_messages('last name', blank_null_error_messages)
     )
     email = models.EmailField(
         blank=False,
         null=False,
         unique=True,
-        error_messages=email_error_messages
+        # error_messages=email_error_messages
     )
     password = models.CharField(
         blank=False,
         null=False,
-        validators=[
-            RegexValidator(
-                regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+]).{8,}$',
-                message=password_error_messages['invalid']
-            )
-        ],
-        error_messages=generate_error_messages('password', blank_null_error_messages)
+        # validators=[
+        #     RegexValidator(
+        #         regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+]).{8,}$',
+        #         message=password_error_messages['invalid']
+        #     )
+        # ],
+        # error_messages=generate_error_messages('password', blank_null_error_messages)
     )
     confirm_password = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('confirm password', blank_null_error_messages)
+        # error_messages=generate_error_messages('confirm password', blank_null_error_messages)
     )
     bio = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('bio', blank_null_error_messages)
+        # error_messages=generate_error_messages('bio', blank_null_error_messages)
     )
     location = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('location', blank_null_error_messages)
+        # error_messages=generate_error_messages('location', blank_null_error_messages)
     )
     occupation = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('occupation', blank_null_error_messages)
+        # error_messages=generate_error_messages('occupation', blank_null_error_messages)
     )
     github_url = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('Github URL', blank_null_error_messages)
+        # error_messages=generate_error_messages('Github URL', blank_null_error_messages)
     )
     linkedin_url = models.CharField(
         blank=False,
         null=False,
-        error_messages=generate_error_messages('LinkedIn URL', blank_null_error_messages)
+        # error_messages=generate_error_messages('LinkedIn URL', blank_null_error_messages)
     )
-    image = models.ImageField(upload_to='images/', blank=False, null=False, validators=[validate_image],
-        error_messages=generate_error_messages('image', blank_null_error_messages))
+    image = models.ImageField(upload_to='images/', blank=False, null=False,
+        validators=[validate_image],
+        error_messages=generate_error_messages('image', blank_null_error_messages)
+        )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
