@@ -5,6 +5,7 @@ from api.serializers import UserSerializer
 from api.models import User
 from django.core.exceptions import ValidationError
 
+
 class UserDetail(APIView):
     def get(self, request, pk):
         user = User.objects.get(id=pk)

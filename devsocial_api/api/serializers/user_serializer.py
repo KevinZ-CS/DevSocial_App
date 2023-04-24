@@ -3,12 +3,7 @@ from api.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-
-
-def validate_image(value):
-    valid_formats = ('jpeg', 'jpg', 'png', 'gif')
-    if value.file.content_type not in map(lambda x: f'image/{x}', valid_formats):
-        raise ValidationError(f'Unsupported file format. Only {", ".join(valid_formats)} files are supported.')
+from django.core.validators import FileExtensionValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,47 +44,21 @@ class UserSerializer(serializers.ModelSerializer):
         )
     ])
 
-
-    image = serializers.ImageField(required=True, validators=[validate_image])
+    image = serializers.ImageField(
+        required=True, 
+        error_messages={
+            'required': 'Please provide an image.',
+            'invalid_image': 'Please provide a valid image file of type JPEG, PNG, or GIF.'
+        },
+        allow_empty_file=False,
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'])]
+    )
+   
 
     class Meta:
         model = User
         fields = '__all__'
 
  
-    # def validate(self, data):
-    #     """
-    #     Check that all fields are present and not blank or null
-    #     """
-    #     for field_name, value in data.items():
-    #         if value in (None, ''):
-    #             raise serializers.ValidationError(self.fields[field_name].error_messages['required'])
-
-    #     # Validate password
-    #     password = data.get('password')
-    #     if password:
-    #         password_validator = RegexValidator(
-    #             regex=r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+]).{8,}$',
-    #             message=_('Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.')
-    #         )
-    #         try:
-    #             password_validator(password)
-    #         except ValidationError as e:
-    #             raise serializers.ValidationError({'password': e.messages})
-            
-    #      # Validate password
-    #     confirm_password = data.get('confirm_password')
-
-    #     if password and confirm_password and password != confirm_password:
-    #         raise serializers.ValidationError({'confirm_password': 'Passwords do not match'})
-            
-    #        # Validate image
-    #     image = data.get('image')
-    #     if image:
-    #         try:
-    #             validate_image(image)
-    #         except ValidationError as e:
-    #             raise serializers.ValidationError({'image': e.messages})
-
-    #     return data
+ 
     
