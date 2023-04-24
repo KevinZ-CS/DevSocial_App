@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%pkluwx=ktpcu00fm=(m%y+-2vvxv+4-v4^+_s3x6xqydqqe7j'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'devsocial_db',
         'USER': 'kzheng',
-        'PASSWORD': 'todoDB21!',
+        'PASSWORD': os.environ.get('PASSWORD_DB'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -167,3 +172,25 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
+
+SIMPLE_JWT = {
+   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+   'ROTATE_REFRESH_TOKENS': False,
+   'BLACKLIST_AFTER_ROTATION': True,
+   'UPDATE_LAST_LOGIN': False,
+   'ALGORITHM': 'HS256',
+   'SIGNING_KEY': os.environ.get('SECRET_KEY_JWT'),
+   'VERIFYING_KEY': None,
+   'AUTH_HEADER_TYPES': ('Bearer',),
+   'USER_ID_FIELD': 'id',
+   'USER_ID_CLAIM': 'user_id',
+   'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+   'TOKEN_TYPE_CLAIM': 'token_type',
+}
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+      'rest_framework_simplejwt.authentication.JWTAuthentication',
+   ],
+}

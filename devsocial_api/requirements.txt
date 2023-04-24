@@ -10,3 +10,5 @@ django-storages
 boto3
 bcrypt
 pillow
+djangorestframework-simplejwt==4.7.2
+
