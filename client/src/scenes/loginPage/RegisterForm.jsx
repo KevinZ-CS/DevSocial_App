@@ -8,12 +8,15 @@ import {
     Container,
     Card,
     CardContent,
+    FormHelperText,
   } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup"; 
 import Dropzone from "react-dropzone"; 
 import FlexBetween from "components/FlexBetween";
+import { useState } from "react";
+import getCookie from "utils/GetCookies"
   
 const registerSchema = yup.object().shape({
     first_name: yup.string().required("required"),
@@ -25,10 +28,10 @@ const registerSchema = yup.object().shape({
     bio: yup.string().required("required"),
     github_url: yup.string().required("required"),
     linkedin_url: yup.string().required("required"),
-    // image: yup.string().required("required"),
-    image: yup.string(),
+    image: yup.string().required("required"),
+
 }); 
-  
+
 const initialValuesRegister = {
     first_name: "",
     last_name: "",
@@ -45,28 +48,11 @@ const initialValuesRegister = {
 const RegisterForm = ({ setPageType, isLogin, isRegister }) => {
 const { palette } = useTheme();
 const isNonMobile = useMediaQuery("(min-width:600px)");
-
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-        }
-        }
-    }
-    return cookieValue;
-    }
+const [errors, setErrors] = useState([]);
     
 const csrftoken = getCookie('csrftoken');
 
-
 const handleSubmit = async (values, onSubmitProps) => {
-
 
 const formData = new FormData();
     for (let value in values) {
@@ -74,9 +60,7 @@ const formData = new FormData();
     } 
     formData.append("image", values.image);
 
-
 register(formData)    
-
 
 function register(data) { fetch(
     "api/users/",
@@ -97,21 +81,21 @@ function register(data) { fetch(
         }) 
 
         } else {
-            response.json().then((error) => console.log(error))
+            response.json().then((error) => {
+                setErrors(error)
+                console.log(error)})
         }
     })
 
 }
 
-
-
-
-
 };
-  
-// const handleFormSubmit = async (values, onSubmitProps) => {
-//     if (isRegister) await register(values, onSubmitProps);
-// };
+
+const {
+    image,
+    email,
+    password,
+  } = errors;
   
 return (
     <Formik
@@ -151,6 +135,7 @@ return (
                 name="first_name" 
                 error={Boolean(touched.first_name) && Boolean(errors.first_name)} 
                 helperText={touched.first_name && errors.first_name} 
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 2" }} 
                 />
             <TextField
@@ -161,6 +146,7 @@ return (
                 name="last_name"
                 error={Boolean(touched.last_name) && Boolean(errors.last_name)}
                 helperText={touched.last_name && errors.last_name}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 2" }}
                 />
             <TextField
@@ -171,6 +157,7 @@ return (
                 name="location"
                 error={Boolean(touched.location) && Boolean(errors.location)}
                 helperText={touched.location && errors.location}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />
             <TextField
@@ -181,6 +168,7 @@ return (
                 name="occupation"
                 error={Boolean(touched.occupation) && Boolean(errors.occupation)}
                 helperText={touched.occupation && errors.occupation}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />
             <TextField
@@ -191,6 +179,7 @@ return (
                 name="bio"
                 error={Boolean(touched.bio) && Boolean(errors.bio)}
                 helperText={touched.bio && errors.bio}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 multiline
                 rows={2}
@@ -204,6 +193,7 @@ return (
                 name="github_url"
                 error={Boolean(touched.github_url) && Boolean(errors.github_url)}
                 helperText={touched.github_url && errors.github_url}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />
 
@@ -215,6 +205,7 @@ return (
                 name="linkedin_url"
                 error={Boolean(touched.linkedin_url) && Boolean(errors.linkedin_url)}
                 helperText={touched.linkedin_url && errors.linkedin_url}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />
 
@@ -251,6 +242,7 @@ return (
                     )}
             </Dropzone>
             </Box>
+            {image && <FormHelperText sx={{ gridColumn: "span 4 ", color: "red", fontSize: "0.75rem", mt: "-1rem" }}>{image}</FormHelperText>}
             </>
             )}
 
@@ -262,8 +254,11 @@ return (
                 name="email"
                 error={Boolean(touched.email) && Boolean(errors.email)}
                 helperText={touched.email && errors.email}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />      
+            {email && <FormHelperText sx={{ gridColumn: "span 4 ", color: "red", fontSize: "0.75rem", mt: "-1rem" }}>{email[0].replace('user', 'User')}</FormHelperText>}
+        
 
             <TextField
                 label="Password"
@@ -274,8 +269,11 @@ return (
                 name="password"
                 error={Boolean(touched.password) && Boolean(errors.password)}
                 helperText={touched.password && errors.password}
+                FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
                 sx={{ gridColumn: "span 4" }}
                 />      
+
+            {password && <FormHelperText sx={{ gridColumn: "span 4 ", color: "red", fontSize: "0.75rem", mt: "-1rem" }}>{password}</FormHelperText>}
    
             </Box>
 
@@ -296,8 +294,7 @@ return (
                 backgroundColor: palette.primary.dark 
                 },
             }}
-            >
-            {isLogin ? "LOGIN" : "REGISTER"}
+            >Register
             </Button>
             <Typography
             onClick={() => {
@@ -314,9 +311,7 @@ return (
             }}
             textAlign="center"
             >
-            {isLogin
-                ? "Don't have an account? Sign Up here."
-                : "Already have an account? Login here."}
+            Already have an account? Login here.
             </Typography>
             </Box>
             </form>

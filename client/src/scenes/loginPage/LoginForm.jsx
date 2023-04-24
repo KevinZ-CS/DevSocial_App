@@ -116,7 +116,8 @@ return (
             },
             }}
         >
-        {isLogin ? "LOGIN" : "REGISTER"}
+            LOGIN
+        {/* {isLogin ? "LOGIN" : "REGISTER"} */}
         </Button>
 
         <Typography
@@ -134,9 +135,10 @@ return (
             }}
             textAlign="center"
         >
-            {isLogin
+            Don't have an account? Sign Up here.
+            {/* {isLogin
             ? "Don't have an account? Sign Up here."
-            : "Already have an account? Login here."}
+            : "Already have an account? Login here."} */}
         </Typography>
         </Box>
     </form>

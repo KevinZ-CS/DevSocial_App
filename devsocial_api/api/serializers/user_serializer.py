@@ -53,7 +53,6 @@ class UserSerializer(serializers.ModelSerializer):
         allow_empty_file=False,
         validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'])]
     )
-   
 
     class Meta:
         model = User
