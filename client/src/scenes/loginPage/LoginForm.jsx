@@ -5,6 +5,7 @@ import {
     useMediaQuery,
     Typography,
     useTheme,
+    FormHelperText,
   } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";   
@@ -29,7 +30,7 @@ const LoginForm = ({ setPageType, isLogin }) => {
 const { palette } = useTheme();
 const dispatch = useDispatch();
 const navigate = useNavigate();
-const [errors, setErrors] =  useState([]);
+const [error, setError] =  useState("");
   
 const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -51,10 +52,16 @@ const response = await fetch(
     const data = await response.json()
 
     if (response.ok) {
-        console.log('ok')
         console.log(data)
+        onSubmitProps.resetForm(); 
+    //     dispatch(setLogin({
+    //      user: data.user,
+    //     token: data.access_token,
+    //     }))
+    //    navigate("/home");
     } else {
         console.log(data)
+        setError(data.error)
     }
 };
 
@@ -118,6 +125,7 @@ return (
             name="email"
             error={Boolean(touched.email) && Boolean(errors.email)}
             helperText={touched.email && errors.email}
+            FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
             sx={{ gridColumn: "span 4" }}
         />
         <TextField
@@ -129,8 +137,11 @@ return (
             name="password"
             error={Boolean(touched.password) && Boolean(errors.password)}
             helperText={touched.password && errors.password}
+            FormHelperTextProps={{ sx: { fontSize: '0.75rem' } }}
             sx={{ gridColumn: "span 4" }}
         />
+
+          {error && <FormHelperText sx={{ gridColumn: "span 4 ", color: "red", fontSize: "0.75rem", mt: "-1rem" }}>{error}</FormHelperText>}
         </Box>
 
         {/* BUTTONS */}
