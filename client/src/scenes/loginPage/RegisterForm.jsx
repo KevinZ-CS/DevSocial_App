@@ -16,7 +16,7 @@ import * as yup from "yup";
 import Dropzone from "react-dropzone"; 
 import FlexBetween from "components/FlexBetween";
 import { useState } from "react";
-import getCookie from "utils/GetCookies"
+import getCookie from "utils/GetCookies";
   
 const registerSchema = yup.object().shape({
     first_name: yup.string().required("required"),
@@ -53,43 +53,75 @@ const [errors, setErrors] = useState([]);
 const csrftoken = getCookie('csrftoken');
 
 const handleSubmit = async (values, onSubmitProps) => {
+    console.log(values)
+    const formData = new FormData();
+        for (let value in values) {
+        formData.append(value, values[value]);
+        } 
+        formData.append("image", values.image);
+    
+    const response = await fetch(
+        "api/users/",
+        {   headers: {
+            'X-CSRFToken': csrftoken },
+            method: "POST",
+            body: formData,
+        })    
 
-const formData = new FormData();
-    for (let value in values) {
-    formData.append(value, values[value]);
-    } 
-    formData.append("image", values.image);
-
-register(formData)    
-
-function register(data) { fetch(
-    "api/users/",
-    {   headers: {
-        'X-CSRFToken': csrftoken },
-        method: "POST",
-        body: data,
-    })
-    .then((response) => {
-        if(response.ok) {
-           response.json().then((user) => {
-            console.log(user) 
-            onSubmitProps.resetForm(); 
-            if (user) {
-                setPageType("login");
+    const data = await response.json();
+    if (response.ok) {
+        console.log(data) 
+        onSubmitProps.resetForm(); 
+        if (data) {
+            setPageType("login");
             } 
+    } else {
+        setErrors(data)
+        console.log(data)
+
+    }
+    
+   
+    };
+
+// const handleSubmit = async (values, onSubmitProps) => {
+
+// const formData = new FormData();
+//     for (let value in values) {
+//     formData.append(value, values[value]);
+//     } 
+//     formData.append("image", values.image);
+
+// register(formData)    
+
+// function register(data) { fetch(
+//     "api/users/",
+//     {   headers: {
+//         'X-CSRFToken': csrftoken },
+//         method: "POST",
+//         body: data,
+//     })
+//     .then((response) => {
+//         if(response.ok) {
+//            response.json().then((user) => {
+//             console.log(user) 
+//             onSubmitProps.resetForm(); 
+//             if (user) {
+//                 setPageType("login");
+//             } 
         
-        }) 
+//         }) 
 
-        } else {
-            response.json().then((error) => {
-                setErrors(error)
-                console.log(error)})
-        }
-    })
+//         } else {
+//             response.json().then((error) => {
+//                 setErrors(error)
+//                 console.log(error)})
+//         }
+//     })
 
-}
+// }
 
-};
+// };
 
 const {
     image,

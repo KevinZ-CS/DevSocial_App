@@ -11,6 +11,8 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
+import getCookie from "utils/GetCookies"
+import { useState } from "react";
   
 const loginSchema = yup.object().shape({
 email: yup.string().email("invalid email").required("required"),
@@ -27,35 +29,66 @@ const LoginForm = ({ setPageType, isLogin }) => {
 const { palette } = useTheme();
 const dispatch = useDispatch();
 const navigate = useNavigate();
+const [errors, setErrors] =  useState([]);
   
 const isNonMobile = useMediaQuery("(min-width:600px)");
-  
+
+const csrftoken = getCookie('csrftoken');
+
 const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-    dispatch(
-        setLogin({
-        user: loggedIn.user,
-        token: loggedIn.token,
-        })
-    );
-    navigate("/home");
+
+    console.log(values)
+const response = await fetch(
+    "api/login/",
+    {   headers: {
+        'X-CSRFToken': csrftoken, 
+        "Content-Type": "application/json",
+    },
+        method: "POST",
+        body: JSON.stringify(values),
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+        console.log('ok')
+        console.log(data)
+    } else {
+        console.log(data)
     }
 };
+
+
+
+
+
   
-const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps);
-};
+// const login = async (values, onSubmitProps) => {
+//     const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(values),
+//     });
+//     const loggedIn = await loggedInResponse.json();
+//     onSubmitProps.resetForm();
+//     if (loggedIn) {
+//     dispatch(
+//         setLogin({
+//         user: loggedIn.user,
+//         token: loggedIn.token,
+//         })
+//     );
+//     navigate("/home");
+//     }
+// };
+  
+// const handleFormSubmit = async (values, onSubmitProps) => {
+//     if (isLogin) await login(values, onSubmitProps);
+// };
 
 return (
 <Formik
-    onSubmit={handleFormSubmit} 
+    onSubmit={login} 
     initialValues={initialValuesLogin} 
     validationSchema={loginSchema} >
     {({

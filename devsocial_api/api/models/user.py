@@ -2,6 +2,7 @@ from django.db import models
 import bcrypt
 
 class User(models.Model):
+    
     first_name = models.CharField(
         blank=False,
         null=False,
@@ -41,6 +42,8 @@ class User(models.Model):
     )
     image = models.ImageField(upload_to='images/', blank=False, null=False)
 
+
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -49,4 +52,5 @@ class User(models.Model):
             # Hash the password before saving it to the database
             self.password = bcrypt.hashpw(self.password.encode(), bcrypt.gensalt()).decode()
             super(User, self).save(*args, **kwargs)
-    
+
+  
