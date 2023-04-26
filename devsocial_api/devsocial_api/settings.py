@@ -160,6 +160,7 @@ CORS_ALLOW_ALL_ORIGINS = True # this will allow all origins to make requests to 
 
 
 # Media files
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -196,7 +197,7 @@ REST_FRAMEWORK = {
 }
 
 # Authentication settings
-# AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'api.User'
 
 # AUTHENTICATION_BACKENDS = [
 #     'django.contrib.auth.backends.ModelBackend',
@@ -205,5 +206,5 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend', # default backend
-    'api.backends.EmailBackend', # custom backend
+    # 'api.backends.EmailBackend', # custom backend
 ]

@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.urls import path
 from api.views import UserDetail, UserCreate, UserLogin
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
@@ -23,3 +25,6 @@ urlpatterns = [
     path('login/', UserLogin.as_view(), name='user-login'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

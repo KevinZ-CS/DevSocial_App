@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-// import HomePage from "scenes/homePage"; 
+import HomePage from "scenes/homePage"; 
 import LoginPage from "scenes/loginPage";
 // import ProfilePage from "scenes/profilePage";
 
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
+import PrivateUserRoutes from "utils/PrivateUserRoutes";
 
 function App() {
 
@@ -22,6 +23,11 @@ return (
       <CssBaseline />
         <Routes>
           <Route path="/" element={<LoginPage />} />
+
+          <Route element={<PrivateUserRoutes />}>
+          <Route path='/home' element={<HomePage />} />
+          {/* <Route path='/home/:user_id/:id' element={<ProfilePage />} /> */}
+          </Route>
             {/* <Route
               path="/home"
               element={isAuth ? <HomePage /> : <Navigate to="/" />}

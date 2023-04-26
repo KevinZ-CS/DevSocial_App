@@ -54,11 +54,11 @@ const response = await fetch(
     if (response.ok) {
         console.log(data)
         onSubmitProps.resetForm(); 
-    //     dispatch(setLogin({
-    //      user: data.user,
-    //     token: data.access_token,
-    //     }))
-    //    navigate("/home");
+        dispatch(setLogin({
+         user: data.user_id,
+         token: data.access_token,
+        }))
+       navigate("/home");
     } else {
         console.log(data)
         setError(data.error)

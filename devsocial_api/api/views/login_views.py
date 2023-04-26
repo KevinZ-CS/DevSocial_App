@@ -26,7 +26,7 @@ class UserLogin(APIView):
                     refresh = RefreshToken.for_user(login_user)
                     response = {
                         'access_token': str(refresh.access_token),
-                        'user': UserSerializer(login_user).data
+                        'user_id': login_user.id
                     }
                     return Response(response, status=status.HTTP_200_OK)
             # If the password is incorrect, return an error message

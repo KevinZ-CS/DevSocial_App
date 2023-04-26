@@ -4,10 +4,18 @@ from rest_framework import status
 from api.serializers import UserSerializer
 from api.models import User
 from django.core.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
+import pdb
 
 
 class UserDetail(APIView):
+    authentication_classes = [JWTAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, pk):
+        # pdb.set_trace()
         user = User.objects.get(id=pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
