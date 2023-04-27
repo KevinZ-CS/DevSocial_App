@@ -53,7 +53,7 @@ import {
 
     //for all post make sure to use filter display since we will be trying to implement the search functionality as well for users name
     //the next step is believe is to create the url and view for this, remember to add the authorization in the post view as well
-    //also make sure the formik form below is hooked up properly
+ 
     const handlePost = async () => {
       const formData = new FormData();
       formData.append("user_id", id);
@@ -70,7 +70,7 @@ import {
         formData.append("demo_url", demo); 
       }
   
-      const response = await fetch(`api/posts`, {
+      const response = await fetch(`api/post/`, {
         method: "POST",
         headers: { 
             'X-CSRFToken': csrftoken, 

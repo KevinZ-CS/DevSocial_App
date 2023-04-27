@@ -5,6 +5,7 @@ from api.serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from api.models import User
+from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
 import bcrypt
 import pdb
@@ -25,10 +26,18 @@ class UserLogin(APIView):
                     # If the user exists, generate access and refresh tokens
                     refresh = RefreshToken.for_user(login_user)
                     user_data = UserSerializer(login_user).data
+                    expires_at = datetime.now() + timedelta(minutes=60)
+                    expires_at_timestamp = int(expires_at.timestamp() * 1000)
+                    refresh_token_expiration = datetime.utcnow() + timedelta(days=7)
+                    refresh_token_expiration_timestamp = int(refresh_token_expiration.timestamp() * 1000)
+
 
                     response = {
                         'access_token': str(refresh.access_token),
+                        'refresh_token': str(refresh),
                         # 'user': UserSerializer(login_user).data
+                        'expires_at': expires_at_timestamp,
+                        'refresh_token_expires_in': refresh_token_expiration_timestamp,
                         'user_id': user_data['id'],
                         'image': user_data['image']
                     }

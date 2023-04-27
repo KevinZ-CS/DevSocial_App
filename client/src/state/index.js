@@ -4,9 +4,13 @@ const initialState = {
   mode: "light", 
   user: null,
   token: null, 
+  refreshToken: null,
+  tokenExpiration: null,
+  refreshTokenExpiration: null,
   image: null,
   posts: [],
 };
+
 
 export const authSlice = createSlice({
   name: "auth",
@@ -18,7 +22,10 @@ export const authSlice = createSlice({
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.refreshToken = action.payload.refreshToken
       state.image = action.payload.image;
+      state.tokenExpiration = action.payload.tokenExpiration;
+      state.refreshTokenExpiration = action.payload.refreshTokenExpiration;
     },
     setLogout: (state) => {
       state.user = null;

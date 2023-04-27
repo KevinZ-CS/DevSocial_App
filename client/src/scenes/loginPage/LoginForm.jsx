@@ -57,7 +57,10 @@ const response = await fetch(
         dispatch(setLogin({
          user: data.user_id,
          token: data.access_token,
+         refreshToken: data.refresh_token,
          image: data.image,
+         tokenExpiration: data.expires_at,
+         refreshTokenExpiration: data.refresh_token_expires_in,
         }))
        navigate("/home");
     } else {

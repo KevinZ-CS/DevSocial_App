@@ -16,7 +16,10 @@ class AuthenticatedAPIView(APIView):
 class PostList(AuthenticatedAPIView):
 
     def get(self, request):
-        posts = Post.objects.all() 
+        # posts = Post.objects.select_related('user_id').order_by('-created_at') 
+        # posts = Post.objects.prefetch_related('post_id', 'user_id').order_by('-created_at')
+        # posts = Post.objects.order_by('-created_at') 
+        posts = Post.objects.all().order_by('-created_at') 
         serializer = PostSerializer(posts, many=True) 
         return Response(serializer.data)
 

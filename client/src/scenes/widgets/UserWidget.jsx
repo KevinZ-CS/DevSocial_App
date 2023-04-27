@@ -53,7 +53,7 @@ import {
       occupation,
       github_url,
       linkedin_url,
-      friends,
+      friends, //might just fetch the friends separately or include it
     } = user;
   
     return (
