@@ -4,6 +4,7 @@ const initialState = {
   mode: "light", 
   user: null,
   token: null, 
+  image: null,
   posts: [],
 };
 
@@ -15,9 +16,9 @@ export const authSlice = createSlice({
       state.mode = state.mode === "light" ? "dark" : "light"; 
     },
     setLogin: (state, action) => {
-      console.log(action.payload)
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.image = action.payload.image;
     },
     setLogout: (state) => {
       state.user = null;

@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from api.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
@@ -59,7 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('id', 'email', 'first_name', 'last_name', 'bio', 'location', 'occupation', 'github_url', 'linkedin_url', 'image', 'password')
 
     
     def create(self, validated_data):

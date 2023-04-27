@@ -24,9 +24,13 @@ class UserLogin(APIView):
                     # pdb.set_trace()
                     # If the user exists, generate access and refresh tokens
                     refresh = RefreshToken.for_user(login_user)
+                    user_data = UserSerializer(login_user).data
+
                     response = {
                         'access_token': str(refresh.access_token),
-                        'user_id': login_user.id
+                        # 'user': UserSerializer(login_user).data
+                        'user_id': user_data['id'],
+                        'image': user_data['image']
                     }
                     return Response(response, status=status.HTTP_200_OK)
             # If the password is incorrect, return an error message

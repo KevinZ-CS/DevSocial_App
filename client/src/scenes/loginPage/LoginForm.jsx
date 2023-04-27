@@ -57,6 +57,7 @@ const response = await fetch(
         dispatch(setLogin({
          user: data.user_id,
          token: data.access_token,
+         image: data.image,
         }))
        navigate("/home");
     } else {
