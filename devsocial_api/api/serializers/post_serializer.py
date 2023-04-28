@@ -3,11 +3,13 @@ from api.models import Post
 from django.core.validators import FileExtensionValidator
 from .user_serializer import UserSerializer
 from .comment_serializer import CommentSerializer
+from . userPreview_serializer import UserPreviewSerializer
 
 class PostSerializer(serializers.ModelSerializer):
        
-    user = UserSerializer(source='user_id', read_only=True)
-    comments = CommentSerializer(source="post_id", many=True, read_only=True)
+    # userData = UserSerializer(source='user', read_only=True)
+    userData = UserPreviewSerializer(source='user', read_only=True)
+    comments = CommentSerializer(many=True, read_only=True, source='comment_set')
       
     caption = serializers.CharField(allow_blank=False, allow_null=False, required=True, error_messages={
         'blank': 'Caption cannot be blank',
@@ -26,9 +28,14 @@ class PostSerializer(serializers.ModelSerializer):
         validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'])])
     
     # created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        comments = instance.comment_set.all().order_by('-created_at')
+        representation['comments'] = CommentSerializer(comments, many=True).data
+        return representation
 
     class Meta:
         model = Post
-        fields = ('id', 'user_id', 'github_url', 'demo_url', 'caption', 'image', 'user', 'comments')   
+        fields = ('id', 'github_url', 'demo_url', 'caption', 'image', 'user', 'userData', 'comments')   
         # ordering = ['-created_at'] # sort by created_at field in descending order
 

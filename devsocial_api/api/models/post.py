@@ -25,7 +25,8 @@ class Post(models.Model):
     #     null=False,
     #     error_messages=generate_error_messages('content', blank_null_error_messages)
     # )
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    # user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
     github_url = models.CharField(
         blank=False, 
         null=False,

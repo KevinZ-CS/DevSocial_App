@@ -1,33 +1,41 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts, setLogout } from "state";
+import { setLogout } from "state/authReducer";
+import { setPosts } from "state/postsReducer";
+
 import PostWidget from "./PostWidget";
 
 const PostsWidget = ({ userId, isProfile = false }) => {
-  const dispatch = useDispatch();
 
-  const posts = useSelector((state) => state.posts);
-  const token = useSelector((state) => state.token);
-  const refreshToken = useSelector((state) => state.refreshToken);
+const dispatch = useDispatch();
 
+const posts = useSelector((state) => state.posts.posts);
 
-const tokenExpiration = useSelector((state) => state.tokenExpiration);
-const refreshTokenExpiration = useSelector((state) => state.refreshTokenExpiration);
+console.log(posts)
 
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 
-  
-
-  const getPosts = async () => {
+const getPosts = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
     const response = await fetch("api/posts/", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
+    if(response.ok) {
+      dispatch(setPosts(data))
     console.log(data)
-    dispatch(setPosts({ posts: data })); } 
+    // dispatch(setPosts({ posts: data })); 
+  } else {
+      console.log(response)
+    }
+  } 
     
     else {
+      console.log('is this it?')
         dispatch(setLogout())
     }
   };
@@ -41,7 +49,7 @@ const refreshTokenExpiration = useSelector((state) => state.refreshTokenExpirati
       }
     );
     const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    // dispatch(setPosts({ posts: data }));
   };
 
   useEffect(() => {
@@ -54,7 +62,10 @@ const refreshTokenExpiration = useSelector((state) => state.refreshTokenExpirati
 
 
 
-
+// if(posts.data) {
+//   return null
+// }
+console.log(posts)
   return (
     <>
       {posts.map(
@@ -75,16 +86,16 @@ const refreshTokenExpiration = useSelector((state) => state.refreshTokenExpirati
           <PostWidget
             key={post.id}
             postId={post.id}
-            postUserId={post.user.id}
-            name={`${post.user.first_name} ${post.user.last_name}`}
+            postUserId={post.userData.id}
+            name={`${post.userData.first_name} ${post.userData.last_name}`}
             description={post.caption}
-            location={post.user.location}
+            location={post.userData.location}
             picturePath={post.image}
-            userPicturePath={post.user.image}
+            userPicturePath={post.userData.image}
             github={post.github_url}
             demo={post.demo_url}
             // likes={likes}
-            // comments={comments}
+            comments={post.comments}
           />
         )
       )}

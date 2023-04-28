@@ -6,6 +6,7 @@ const Login= ({ setPageType, isLogin }) => {
 const theme = useTheme();
 const isNonMobileScreens = useMediaQuery("(min-width: 900px)");
 
+
 return (
   <Container backgroundcolor={theme.palette.background.alt}> 
   <Card sx={{ marginTop: 8,}} >

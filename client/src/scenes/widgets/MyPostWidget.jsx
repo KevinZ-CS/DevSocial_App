@@ -23,7 +23,8 @@ import {
 
   import { useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
-  import { setPosts } from "state";
+  import { addPost } from "state/postsReducer";
+//   import { setPosts } from "state/authReducer";
   
   import getCookie from "utils/GetCookies";
 
@@ -40,9 +41,9 @@ import {
 
     // const { _id } = useSelector((state) => state.user); //change this
 
-    const id = useSelector((state) => state.user); 
+    const id = useSelector((state) => state.auth.user); 
     console.log(id)
-    const token = useSelector((state) => state.token);
+    const token = useSelector((state) => state.auth.token);
     const isNonMobileScreens = useMediaQuery("(min-width: 1100px)");
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -56,7 +57,7 @@ import {
  
     const handlePost = async () => {
       const formData = new FormData();
-      formData.append("user_id", id);
+      formData.append("user", id);
       formData.append("caption", post);
       if (image) {
         formData.append("image", image); //this is where the actual image and image name gets uploaded
@@ -77,11 +78,16 @@ import {
             Authorization: `Bearer ${token}` },
         body: formData,
       });
-      const posts = await response.json(); //backend will return a list of updated posts
-      console.log(posts)
-    //   dispatch(setPosts({ posts }));
-      setImage(null);
-      setPost("");
+      const newPost = await response.json(); //backend will return a list of updated posts
+      if(response.ok) {
+        console.log(newPost)
+            dispatch(addPost(newPost))
+        //   dispatch(setPosts({ posts }));
+          setImage(null);
+          setPost("");
+      } else {
+        console.log(response)
+      }
     };
   
     return (

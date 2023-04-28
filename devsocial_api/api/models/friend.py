@@ -4,13 +4,16 @@ from api.models import User
 
 
 class Friend(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
-    friend_id = models.IntegerField(blank=False, null=False)
+    # user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    # friend_id = models.IntegerField(blank=False, null=False)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    friend = models.IntegerField(blank=False, null=False)
 
     class Meta:
-        unique_together = ['user_id', 'friend_id']
+        unique_together = ['user', 'friend']
 
     def clean(self):
-        if self.user_id == self.friend_id:
+        if self.user == self.friend:
             raise ValidationError('A user cannot be friends with themselves.')
 

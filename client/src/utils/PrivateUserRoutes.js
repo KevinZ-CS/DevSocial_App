@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 
 function PrivateUserRoutes() {
     
-const isAuth = Boolean(useSelector((state) => state.token));
+const isAuth = Boolean(useSelector((state) => state.auth.token));
+
+
 
 return (       
     isAuth ? <Outlet/> : <Navigate to='/' />

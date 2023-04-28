@@ -10,8 +10,8 @@ import AdvertWidget from "scenes/widgets/AdvertWidget";
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const user = useSelector((state) => state.user);
-  const image = useSelector((state) => state.image);
+  const user = useSelector((state) => state.auth.user);
+  const image = useSelector((state) => state.auth.image);
 
   return (
     <Box>

@@ -21,7 +21,7 @@ import {
     const [user, setUser] = useState(null); // this is different from the one in redux store because the one in the store is used for authentication purposes only while this one seems to be for user data, take a look how the user state is used in loginPage Form to understand
     const { palette } = useTheme();
     const navigate = useNavigate();
-    const token = useSelector((state) => state.token);
+    const token = useSelector((state) => state.auth.token);
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
