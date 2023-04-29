@@ -14,8 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
-from api.views import UserDetail, UserCreate, UserLogin, PostList, PostDetail, PostCreate, CommentCreate
+from django.urls import path, include
+from api.views import UserDetail, UserCreate, UserLogin, PostList, PostDetail, PostCreate, CommentCreate, CommentDetail, UpdateLike
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,9 +24,19 @@ urlpatterns = [
     path('users/', UserCreate.as_view(), name='user-create'),
     path('login/', UserLogin.as_view(), name='user-login'),
     path('posts/', PostList.as_view(), name='post-list'),
-    path('post/<int:pk>/', PostDetail.as_view(), name='post-detail'),
     path('post/', PostCreate.as_view(), name='post-create'),
-    path('comment/', CommentCreate.as_view(), name='comment-create'),
+    # path('post/<int:pk>/', PostDetail.as_view(), name='post-detail'),
+    path('post/<int:pk>/', include([
+        path('', PostDetail.as_view(), name='post-detail'), #the empty string '' represents the base path of the nested URLs
+        # path('comments/', CommentList.as_view(), name='comment-list'),
+        path('comment/create/', CommentCreate.as_view(), name='comment-create'),
+        path('comment/<int:user_pk>/<int:comment_pk>/delete/', CommentDetail.as_view(), name='comment-detail'),
+        path('like/<int:user_pk>/update/', UpdateLike.as_view(), name='update-like'),
+    ])),
+
+
+
+    # path('comment/', CommentCreate.as_view(), name='comment-create'),
 
 ]
 

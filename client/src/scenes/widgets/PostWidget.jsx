@@ -11,7 +11,7 @@ import {
   import { Box, Divider, IconButton, Typography, useTheme, Card, CardContent, InputBase, Button } from "@mui/material";
 
   import FlexBetween from "components/FlexBetween";
-//   import Friend from "components/Friend";
+  import Friend from "components/Friend";
   import WidgetWrapper from "components/WidgetWrapper";
   import UserImage from "components/UserImage";
   import Comment from "components/Comment";
@@ -31,19 +31,21 @@ import {
     location,
     picturePath,
     userPicturePath,
-    // likes,
+    likes,
     comments,
     github,
     demo,
   }) => {
 
-    const likes = 5
+    // const likes = 5
     // const comments = []
     console.log(comments)
 
-    //thinking about making an isolated area just for this posts comment in this component and then displaying it
-    //also add trash can next to comment, make it conditional and have the delete reqeust here
-    //make github and demo icons conditional
+    // const displayComments = comments
+    // console.log(displayComments)
+
+
+  
 
     const [isComments, setIsComments] = useState(false); //determines if we open the comments list or not
     const dispatch = useDispatch();
@@ -52,8 +54,13 @@ import {
     // const isLiked = Boolean(likes[loggedInUserId]); //remember that the likes for a post looks something like this {userId1: true, userId2: true } so for isLiked we're checking if the likes objects thats being passed down for this post contains a key that's the current user id and that key has a value, if it does it will return true if not it will return false
     // const likeCount = Object.keys(likes).length; //this just grabs the length of the keys in the likes object
 
-    const isLiked = false
-    const likeCount = false
+   
+
+
+    const [displayComments, setDisplayComments] = useState(comments)
+
+    // const isLiked = false
+    // const likeCount = false
 
 
   
@@ -66,9 +73,16 @@ import {
     const [comment, setComment] = useState('');
     const loggedInUser = useSelector((state) => state.auth.user);
 
+    const [like, setLike] = useState(likes)
+
+    const isLiked = like.some(obj => Object.values(obj).includes(loggedInUser));
+    const likeCount = like.length; 
+ 
+    console.log(like)
+
     const handlePostComment = async () => {
       const response = await fetch(
-        "api/comment/",
+        `api/post/${postId}/comment/create/`,
         {
           method: "POST",
           headers: { 
@@ -87,23 +101,42 @@ import {
       }
       const data = await response.json();
         setComment('')
+        setDisplayComments([data, ...displayComments]);
         console.log(data)
     };
 
    
   
-    // const patchLike = async () => {
-    //   const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
-    //     method: "PATCH",
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ userId: loggedInUserId }),
-    //   });
-    //   const updatedPost = await response.json(); //this gives us the updated post from the backend
-    //   dispatch(setPost({ post: updatedPost })); //notice how its setPost not setPosts
-    // }; //this updates the likes
+    const patchLike = async () => {
+      const response = await fetch(`api/post/${postId}/like/${loggedInUser}/update/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          'X-CSRFToken': csrftoken, 
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ 
+          post: postId,
+          user: loggedInUser,
+        }),
+      });
+      const updatedLike = await response.json(); //this gives us the updated post from the backend
+      
+      if(response.ok) {
+        if(updatedLike.message === "like") {
+          console.log(updatedLike.data)
+          setLike([updatedLike.data, ...like])
+    
+        } else {
+          const updatedLikes = like.filter((user) => user.user !== loggedInUser)
+          setLike(updatedLikes)
+        console.log(updatedLike) }
+
+      } else {
+        console.log(updatedLike)
+      }
+    
+    }; //this updates the likes
   
 
     return (
@@ -111,12 +144,12 @@ import {
       borderRadius: "0.75rem",}} >
         <CardContent>
       {/* <WidgetWrapper m="2rem 0"> */}
-        {/* <Friend
+        <Friend
           friendId={postUserId}
           name={name}
           subtitle={location}
           userPicturePath={userPicturePath}
-        /> */}
+        />
         <Typography color={main} sx={{ mt: "1rem" }}>
           {description}
 
@@ -125,21 +158,21 @@ import {
 
           <FlexBetween gap="1rem" mt="-0.5rem" mb="0.5rem">
             <FlexBetween gap="0.4rem">
-              <>
+              {github&&<> 
               <GitHub sx={{ fontSize: "30px" }} />
                 <Typography color={main} fontWeight="500"
                 sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}
                 >
-                <a href=''target="_blank">Github.</a>
+                <a href={github} target="_blank">Github.</a>
                 </Typography>
-              </>
+              </>}
 
-              <>
+              {demo&&<>
               <PlayCircle sx={{ fontSize: "30px" }} />
                 <Typography color={main} fontWeight="500" sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}>
-                <a href='' target="_blank">Demo</a>
+                <a href={demo} target="_blank">Demo</a>
                 </Typography>
-              </>
+              </>}
             </FlexBetween>
           </FlexBetween>
           
@@ -167,8 +200,9 @@ import {
         )}
         <FlexBetween mt="0.25rem" ml="-1rem">
           <FlexBetween gap="0.5rem">
+
             <FlexBetween gap="0.3rem">
-              <IconButton onClick={() => console.log('patchLike use to be here')}>
+              <IconButton onClick={patchLike}>
                 {isLiked ? (
                   <FavoriteOutlined sx={{ color: primary }} />
                 ) : (
@@ -182,7 +216,7 @@ import {
               <IconButton onClick={() => setIsComments(!isComments)}>
                 <ChatBubbleOutlineOutlined />
               </IconButton>
-              <Typography>{comments.length}</Typography>
+              <Typography>{displayComments.length}</Typography>
             </FlexBetween>
           </FlexBetween>
           
@@ -201,7 +235,7 @@ import {
         {isComments && (
           <Box mt="0.5rem">
 
-{comments.map((comment, i) => (
+{displayComments.map((comment, i) => (
               <Box key={`${comment.userData.first_name}-${i}`} mt="1rem"> 
             
      
@@ -210,11 +244,17 @@ import {
           name={`${comment.userData.first_name} ${comment.userData.last_name}`}
           subtitle={comment.userData.location}
           userPicturePath={comment.userData.image}
+          commentUser={comment.user}
+          comment={comment.comment}
+          setDisplayComments={setDisplayComments}
+          commentId={comment.id}
+          postId={postId}
+          commentsDisplay={displayComments}
          
         />
-        <Typography color={main} sx={{ mt: "-1rem", marginLeft: "3.2rem" }}>
+        {/* <Typography color={main} sx={{ mt: "-1rem", marginLeft: "3.2rem" }}>
           {comment.comment}
-        </Typography >
+        </Typography > */}
 
 
               </Box>

@@ -4,12 +4,14 @@ from django.core.validators import FileExtensionValidator
 from .user_serializer import UserSerializer
 from .comment_serializer import CommentSerializer
 from . userPreview_serializer import UserPreviewSerializer
+from .like_serializer import LikeSerializer
 
 class PostSerializer(serializers.ModelSerializer):
        
     # userData = UserSerializer(source='user', read_only=True)
     userData = UserPreviewSerializer(source='user', read_only=True)
     comments = CommentSerializer(many=True, read_only=True, source='comment_set')
+    likes = LikeSerializer(many=True, read_only=True, source='like_set')
       
     caption = serializers.CharField(allow_blank=False, allow_null=False, required=True, error_messages={
         'blank': 'Caption cannot be blank',
@@ -36,6 +38,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'github_url', 'demo_url', 'caption', 'image', 'user', 'userData', 'comments')   
+        fields = ('id', 'github_url', 'demo_url', 'caption', 'image', 'user', 'userData', 'comments', 'likes')   
         # ordering = ['-created_at'] # sort by created_at field in descending order
 

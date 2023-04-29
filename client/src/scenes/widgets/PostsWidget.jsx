@@ -11,7 +11,6 @@ const dispatch = useDispatch();
 
 const posts = useSelector((state) => state.posts.posts);
 
-console.log(posts)
 
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
@@ -94,7 +93,7 @@ console.log(posts)
             userPicturePath={post.userData.image}
             github={post.github_url}
             demo={post.demo_url}
-            // likes={likes}
+            likes={post.likes}
             comments={post.comments}
           />
         )

@@ -41,14 +41,18 @@ class CommentDetail(AuthenticatedAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        comment = Comment.objects.get(id=pk)
-        comment.delete()
-        return Response("Comment successfully deleted!")
+    def delete(self, request, pk, user_pk, comment_pk):
+        comment = Comment.objects.get(id=comment_pk)
+        if comment.user_id == user_pk:
+            comment.delete()
+            return Response({"message": "Comment successfully deleted!"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "You are not authorized to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
+        
 
 class CommentCreate(AuthenticatedAPIView):
 
-    def post(self, request):
+    def post(self, request, pk):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

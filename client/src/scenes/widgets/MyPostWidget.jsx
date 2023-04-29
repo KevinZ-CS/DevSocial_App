@@ -42,7 +42,7 @@ import {
     // const { _id } = useSelector((state) => state.user); //change this
 
     const id = useSelector((state) => state.auth.user); 
-    console.log(id)
+   
     const token = useSelector((state) => state.auth.token);
     const isNonMobileScreens = useMediaQuery("(min-width: 1100px)");
 

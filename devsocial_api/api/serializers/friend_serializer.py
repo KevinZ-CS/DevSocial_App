@@ -5,3 +5,4 @@ class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friend
         fields = ('friend_id', 'user_id')   
+        # fields = ('id', 'post', 'user')   
