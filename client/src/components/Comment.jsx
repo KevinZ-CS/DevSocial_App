@@ -47,7 +47,7 @@ const Comment = ({ friendId, name, subtitle, userPicturePath, commentUser, comme
 
   const handleDeleteComment = async () => {
     const response = await fetch(
-      `api/post/${postId}/comment/${loggedInUser}/${commentId}/delete/`,
+      `/api/posts/${postId}/comment/${loggedInUser}/${commentId}/delete/`,
       {
         method: "DELETE",
         headers: {

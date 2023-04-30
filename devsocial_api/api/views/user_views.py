@@ -15,7 +15,6 @@ class UserDetail(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        # pdb.set_trace()
         user = User.objects.get(id=pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)

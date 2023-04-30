@@ -8,6 +8,9 @@ const initialState = {
   tokenExpiration: null,
   refreshTokenExpiration: null,
   image: null,
+  friendsList: [],
+  profileFriendsList: [],
+  profileUser: null,
 };
 
 
@@ -31,10 +34,26 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
     },
+    setFriends: (state, action) => {
+      state.friendsList = action.payload;
+    },
+    addFriend: (state, action) => {
+      state.friendsList.push(action.payload)
+    },
+    removeFriend: (state, action) => {
+      const updatedFriendsList = state.friendsList.filter((friend) => friend.id !== action.payload)
+      state.friendsList = updatedFriendsList
+    },
+    setProfileFriends: (state, action) => {
+      state.profileFriendsList = action.payload;
+    },
+    setProfileUser: (state, action) => {
+      state.profileUser = action.payload;
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout } =
+export const { setMode, setLogin, setLogout, setFriends, addFriend, removeFriend, setProfileFriends, setProfileUser } =
   authSlice.actions
 
 export default authSlice.reducer;

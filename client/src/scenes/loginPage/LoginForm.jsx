@@ -40,7 +40,7 @@ const login = async (values, onSubmitProps) => {
 
     console.log(values)
 const response = await fetch(
-    "api/login/",
+    "/api/login/",
     {   headers: {
         'X-CSRFToken': csrftoken, 
         "Content-Type": "application/json",
@@ -52,7 +52,6 @@ const response = await fetch(
     const data = await response.json()
 
     if (response.ok) {
-        console.log(data)
         onSubmitProps.resetForm(); 
         dispatch(setLogin({
          user: data.user_id,
@@ -64,7 +63,6 @@ const response = await fetch(
         }))
        navigate("/home");
     } else {
-        console.log(data)
         setError(data.error)
     }
 };

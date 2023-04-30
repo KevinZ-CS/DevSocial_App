@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import HomePage from "scenes/homePage"; 
 import LoginPage from "scenes/loginPage";
-// import ProfilePage from "scenes/profilePage";
+import ProfilePage from "scenes/profilePage";
 
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -26,16 +26,10 @@ return (
 
           <Route element={<PrivateUserRoutes />}>
           <Route path='/home' element={<HomePage />} />
-          {/* <Route path='/home/:user_id/:id' element={<ProfilePage />} /> */}
+
+          <Route path='/profile/:userId' element={<ProfilePage />} />
           </Route>
-            {/* <Route
-              path="/home"
-              element={isAuth ? <HomePage /> : <Navigate to="/" />}
-            /> */}
-            {/* <Route
-              path="/profile/:userId"
-              element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
-            /> */}
+  
          </Routes>
       </ThemeProvider>
     </BrowserRouter>

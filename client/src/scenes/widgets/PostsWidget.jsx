@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
+
+import { useLocation } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "state/authReducer";
 import { setPosts } from "state/postsReducer";
 
 import PostWidget from "./PostWidget";
 
-const PostsWidget = ({ userId, isProfile = false }) => {
+const PostsWidget = ({ userId }) => {
 
 const dispatch = useDispatch();
 
 const posts = useSelector((state) => state.posts.posts);
+const { pathname } = useLocation();
+const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
+
 
 
 const token = useSelector((state) => state.auth.token);
@@ -17,70 +23,82 @@ const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 
+
+
+
 const getPosts = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
-    const response = await fetch("api/posts/", {
+    const response = await fetch("/api/posts/", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
     if(response.ok) {
       dispatch(setPosts(data))
-    console.log(data)
-    // dispatch(setPosts({ posts: data })); 
   } else {
       console.log(response)
     }
   } 
     
     else {
-      console.log('is this it?')
         dispatch(setLogout())
     }
   };
 
   const getUserPosts = async () => {
+    if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
     const response = await fetch(
-      `http://localhost:3001/posts/${userId}/posts`,
+      `/api/posts/${userId}/`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    const data = await response.json();
-    // dispatch(setPosts({ posts: data }));
+    const data = await response.json(); 
+    if(response.ok) {
+      dispatch(setPosts(data))
+    // dispatch(setPosts({ posts: data })); 
+  } else {
+      console.log(response)
+    }
+  }    else {
+      dispatch(setLogout())
+  }
   };
 
+  // useEffect(() => {
+  //     getPosts();
+  // }, []); 
+
   useEffect(() => {
-    if (isProfile) {
-      getUserPosts();
+    if (profilePath === 'profile') {
+      getUserPosts(); //change this to filter maybe
     } else {
       getPosts();
     }
-  }, []); 
+  }, [userId]); 
+
+  // useEffect(() => {   
+  //     getPosts();
+  // }, []); 
+
 
 
 
 // if(posts.data) {
 //   return null
 // }
-console.log(posts)
+
+  // const postsDisplay = posts.filter((post) => post.user === parseInt(userId))
+
+  if(posts.length === 0) {
+    return null
+  }
+
   return (
-    <>
+    <> 
       {posts.map(
         (post
-        //     {
-        //   _id,
-        //   userId,
-        //   firstName,
-        //   lastName,
-        //   description,
-        //   location,
-        //   picturePath,
-        //   userPicturePath,
-        //   likes,
-        //   comments,
-        // }
         ) => (
           <PostWidget
             key={post.id}
@@ -97,8 +115,8 @@ console.log(posts)
             comments={post.comments}
           />
         )
-      )}
-    </>
+      )} 
+    </> 
   );
 };
 

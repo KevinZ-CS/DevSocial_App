@@ -13,7 +13,7 @@ class Friend(models.Model):
     class Meta:
         unique_together = ['user', 'friend']
 
-    def clean(self):
-        if self.user == self.friend:
-            raise ValidationError('A user cannot be friends with themselves.')
+    # def clean(self):
+    #     if self.user == self.friend:
+    #         raise ValidationError('A user cannot be friends with themselves.')
 

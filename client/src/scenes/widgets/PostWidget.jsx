@@ -37,12 +37,6 @@ import {
     demo,
   }) => {
 
-    // const likes = 5
-    // const comments = []
-    console.log(comments)
-
-    // const displayComments = comments
-    // console.log(displayComments)
 
 
   
@@ -78,11 +72,11 @@ import {
     const isLiked = like.some(obj => Object.values(obj).includes(loggedInUser));
     const likeCount = like.length; 
  
-    console.log(like)
+
 
     const handlePostComment = async () => {
       const response = await fetch(
-        `api/post/${postId}/comment/create/`,
+        `/api/posts/${postId}/comment/create/`,
         {
           method: "POST",
           headers: { 
@@ -102,13 +96,12 @@ import {
       const data = await response.json();
         setComment('')
         setDisplayComments([data, ...displayComments]);
-        console.log(data)
     };
 
    
   
     const patchLike = async () => {
-      const response = await fetch(`api/post/${postId}/like/${loggedInUser}/update/`, {
+      const response = await fetch(`/api/posts/${postId}/like/${loggedInUser}/update/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -124,13 +117,12 @@ import {
       
       if(response.ok) {
         if(updatedLike.message === "like") {
-          console.log(updatedLike.data)
           setLike([updatedLike.data, ...like])
     
         } else {
           const updatedLikes = like.filter((user) => user.user !== loggedInUser)
           setLike(updatedLikes)
-        console.log(updatedLike) }
+      }
 
       } else {
         console.log(updatedLike)
@@ -149,6 +141,7 @@ import {
           name={name}
           subtitle={location}
           userPicturePath={userPicturePath}
+          friendListFlag={false}
         />
         <Typography color={main} sx={{ mt: "1rem" }}>
           {description}

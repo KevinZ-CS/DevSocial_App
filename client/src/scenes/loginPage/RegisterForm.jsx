@@ -61,7 +61,7 @@ const handleSubmit = async (values, onSubmitProps) => {
         formData.append("image", values.image);
     
     const response = await fetch(
-        "api/users/",
+        "/api/users/",
         {   headers: {
             'X-CSRFToken': csrftoken },
             method: "POST",

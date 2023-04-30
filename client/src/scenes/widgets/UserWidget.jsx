@@ -11,35 +11,61 @@ import {
   import FlexBetween from "components/FlexBetween";
   import WidgetWrapper from "components/WidgetWrapper";
 
-  import { useSelector } from "react-redux";
+  import { useSelector, useDispatch } from "react-redux";
   import { useEffect, useState } from "react";
   import { useNavigate } from "react-router-dom";
+  import { setPosts } from 'state/postsReducer'
+  import { setProfileUser } from 'state/authReducer';
 
   //this is going to be the user profile section on the left side
   
-  const UserWidget = ({ userId, picturePath }) => {
-    const [user, setUser] = useState(null); // this is different from the one in redux store because the one in the store is used for authentication purposes only while this one seems to be for user data, take a look how the user state is used in loginPage Form to understand
+  const UserWidget = ({ userId }) => {
+    // const [user, setUser] = useState(null); // this is different from the one in redux store because the one in the store is used for authentication purposes only while this one seems to be for user data, take a look how the user state is used in loginPage Form to understand
     const { palette } = useTheme();
     const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token);
+    const dispatch = useDispatch();
+    // const token = useSelector((state) => state.auth.token);
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
     const primaryDark = palette.primary.dark;
-   
+    const token = useSelector((state) => state.auth.token);
+    const friends = useSelector((state) => state.auth.friendsList);
+    const user = useSelector((state) => state.auth.profileUser);
+  
+
     const getUser = async () => {
-      const response = await fetch(`api/users/${userId}`, {
+      const response = await fetch(`/api/users/${userId}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
-      console.log(data)
-      setUser(data);
+      // setUser(data);
+      dispatch(setProfileUser(data));
     };
   
     useEffect(() => {
       getUser();
-    }, []); 
+    }, [userId]); 
+
+
+    
+   
+    // const getUser = async () => {
+    //   const response = await fetch(`api/users/${userId}`, {
+    //     method: "GET",
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   });
+    //   const data = await response.json();
+    //   console.log(data)
+    //   setUser(data);
+    // };
+  
+    // useEffect(() => {
+    //   getUser();
+    // }, []); 
+
+
   
     if (!user) {
       return null;
@@ -53,7 +79,7 @@ import {
       occupation,
       github_url,
       linkedin_url,
-      friends, //might just fetch the friends separately or include it
+      // friends, //might just fetch the friends separately or include it
     } = user;
   
     return (
@@ -62,7 +88,9 @@ import {
         <FlexBetween
           gap="0.5rem"
           pb="1.1rem" //padding-bottom
-          onClick={() => navigate(`/profile/${userId}`)}
+          onClick={() => {
+            // dispatch(setPosts([]))
+            navigate(`/profile/${user.id}`)}}
         >
           <FlexBetween gap="1rem">
             <UserImage image={image} />
@@ -80,7 +108,7 @@ import {
               >
                 {first_name} {last_name}
               </Typography>
-              <Typography color={medium}>5 friends</Typography>
+              <Typography color={medium}>{friends.length > 1 ? `${friends.length} friends` : `${friends.length} friend`} </Typography>
               {/* <Typography color={medium}>{friends.length} friends</Typography> */}
             </Box>
           </FlexBetween>
@@ -112,10 +140,8 @@ import {
   
         {/* THIRD ROW */}
         <Box p="1rem 0">
-          <Typography>
-            <span>
+          <Typography style={{ wordWrap: 'break-word' }}>
              {user.bio}
-            </span>
           </Typography>
    
         </Box>

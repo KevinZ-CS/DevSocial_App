@@ -28,7 +28,7 @@ import {
   
   import getCookie from "utils/GetCookies";
 
-  const MyPostWidget = ({ picturePath }) => {
+  const MyPostWidget = () => {
     const dispatch = useDispatch();
     const [isImage, setIsImage] = useState(false); 
 
@@ -42,6 +42,7 @@ import {
     // const { _id } = useSelector((state) => state.user); //change this
 
     const id = useSelector((state) => state.auth.user); 
+    const picturePath = useSelector((state) => state.auth.image); 
    
     const token = useSelector((state) => state.auth.token);
     const isNonMobileScreens = useMediaQuery("(min-width: 1100px)");
@@ -71,7 +72,7 @@ import {
         formData.append("demo_url", demo); 
       }
   
-      const response = await fetch(`api/post/`, {
+      const response = await fetch(`/api/posts/create/`, {
         method: "POST",
         headers: { 
             'X-CSRFToken': csrftoken, 
@@ -80,9 +81,8 @@ import {
       });
       const newPost = await response.json(); //backend will return a list of updated posts
       if(response.ok) {
-        console.log(newPost)
+
             dispatch(addPost(newPost))
-        //   dispatch(setPosts({ posts }));
           setImage(null);
           setPost("");
       } else {

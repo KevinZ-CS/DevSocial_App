@@ -27,9 +27,12 @@ class PostDetail(AuthenticatedAPIView):
 
     def get(self, request, pk):
         # pdb.set_trace()
-        post = Post.objects.get(id=pk)
-        serializer = PostSerializer(post)
+        posts = Post.objects.filter(user=pk).order_by('-created_at') 
+        serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+        # post = Post.objects.get(id=pk)
+        # serializer = PostSerializer(post)
+        # return Response(serializer.data)
 
     def put(self, request, pk):
         post = Post.objects.get(id=pk)
@@ -45,7 +48,6 @@ class PostDetail(AuthenticatedAPIView):
         return Response("Post successfully deleted!")
 
 class PostCreate(AuthenticatedAPIView):
-  
     def post(self, request):
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():

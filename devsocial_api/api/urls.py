@@ -15,18 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
-from api.views import UserDetail, UserCreate, UserLogin, PostList, PostDetail, PostCreate, CommentCreate, CommentDetail, UpdateLike
+from api.views import UserDetail, UserCreate, UserLogin, PostList, PostDetail, PostCreate, CommentCreate, CommentDetail, UpdateLike, UpdateFriend, FriendsList
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
+    # path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
+
+    path('users/<int:pk>/', include([
+        path('', UserDetail.as_view(), name='user-detail'),    
+        path('friends/', FriendsList.as_view(), name='friend-update'),
+        path('friends/<int:pk_friend>/update/', UpdateFriend.as_view(), name='friend-update'),
+    ])),
+
     path('users/', UserCreate.as_view(), name='user-create'),
+
+
     path('login/', UserLogin.as_view(), name='user-login'),
     path('posts/', PostList.as_view(), name='post-list'),
-    path('post/', PostCreate.as_view(), name='post-create'),
+    path('posts/create/', PostCreate.as_view(), name='post-create'),
     # path('post/<int:pk>/', PostDetail.as_view(), name='post-detail'),
-    path('post/<int:pk>/', include([
+    path('posts/<int:pk>/', include([
         path('', PostDetail.as_view(), name='post-detail'), #the empty string '' represents the base path of the nested URLs
         # path('comments/', CommentList.as_view(), name='comment-list'),
         path('comment/create/', CommentCreate.as_view(), name='comment-create'),

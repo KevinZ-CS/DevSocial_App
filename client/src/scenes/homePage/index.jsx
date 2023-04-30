@@ -5,13 +5,32 @@ import UserWidget from "scenes/widgets/UserWidget";
 import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
-// import FriendListWidget from "scenes/widgets/FriendListWidget";
+import { useEffect, useState } from "react";
+import FriendListWidget from "scenes/widgets/FriendListWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  const user = useSelector((state) => state.auth.user);
-  const image = useSelector((state) => state.auth.image);
+  //maybe move fetch to get user
+
+  const userId = useSelector((state) => state.auth.user);
+  // const image = useSelector((state) => state.auth.image);
+  const token = useSelector((state) => state.auth.token);
+  const [user, setUser] = useState(null);
+
+ 
+  // const getUser = async () => {
+  //   const response = await fetch(`/api/users/${userId}`, {
+  //     method: "GET",
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   });
+  //   const data = await response.json();
+  //   setUser(data);
+  // };
+
+  // useEffect(() => {
+  //   getUser();
+  // }, []); 
 
   return (
     <Box>
@@ -24,20 +43,20 @@ const HomePage = () => {
         justifyContent="space-between"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={user} image="none" />
+          <UserWidget userId={userId} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={image} />
-          <PostsWidget userId={user} />
+          <MyPostWidget />
+          <PostsWidget userId={userId} />
         </Box>
         {isNonMobileScreens && ( 
           <Box flexBasis="26%">
             <AdvertWidget />
             <Box m="2rem 0" />
-            {/* <FriendListWidget userId={_id} /> */}
+            <FriendListWidget userId={userId} /> 
           </Box>
         )}
       </Box>

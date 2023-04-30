@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state/authReducer";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import { setPosts } from "state/postsReducer";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -51,7 +52,9 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"  
           color="primary"
-          onClick={() => navigate("/home")}
+          onClick={() => {
+            // dispatch(dispatch(setPosts([])))
+            navigate("/home")}}
           sx={{
             "&:hover": {
               color: primaryDark,
