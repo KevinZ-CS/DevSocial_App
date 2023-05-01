@@ -7,10 +7,14 @@ import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 
+
 const HomePage = () => {
 
 const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 const userId = useSelector((state) => state.auth.user);
+
+
+
 
 
  return (

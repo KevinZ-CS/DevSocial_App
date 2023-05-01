@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state/authReducer";
+import { setSearchKeyword, setPostsDisplay } from "state/postsReducer";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 
@@ -29,8 +30,11 @@ const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const fullName = useSelector((state) => state.auth.full_name);
+const searchKeyword = useSelector((state) => state.posts.searchKeyword);
 const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 const theme = useTheme(); 
+
+const posts = useSelector((state) => state.posts.posts);
 
 const neutralLight = theme.palette.neutral.light;
 const dark = theme.palette.neutral.dark;
@@ -46,7 +50,11 @@ return (
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"  
           color="primary"
-          onClick={() => {navigate("/home")}}
+          onClick={() => {
+            navigate("/home")
+            dispatch(setSearchKeyword(''))
+            dispatch(setPostsDisplay(posts))
+          }}
           sx={{
             "&:hover": {
               color: primaryDark,
@@ -63,8 +71,23 @@ return (
             gap="3rem"
             padding="0.1rem 1.5rem" 
           >
-            <InputBase placeholder="Search..." />
-            <IconButton>
+            <InputBase 
+            placeholder="Search..." 
+            value={searchKeyword}
+            onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
+            />
+
+            <IconButton onClick={() => {
+              navigate("/home")
+              dispatch(setPostsDisplay(posts.filter((post) =>
+              (post.userData.first_name + post.userData.last_name)
+              .toLowerCase()
+              .includes(searchKeyword.split(' ').join('').toLowerCase())
+              )))
+              
+            } 
+              }
+              >
               <Search />
             </IconButton>
           </FlexBetween>

@@ -6,6 +6,7 @@ import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import getCookie from "utils/GetCookies";
 import { addFriend, removeFriend } from 'state/authReducer';
+import { setSearchKeyword } from 'state/postsReducer';
 
 
 const Friend = ({ friendId, name, subtitle, userPicturePath, friendListFlag }) => {
@@ -61,7 +62,9 @@ const patchFriend = async () => {
       <FlexBetween gap="1rem" mt="-0.75rem">
         <UserImage image={userPicturePath} size="55px" />
         <Box
-          onClick={() => {navigate(`/profile/${friendId}`);
+          onClick={() => {
+            navigate(`/profile/${friendId}`);
+            dispatch(setSearchKeyword(''))
           }}
         >
           <Typography

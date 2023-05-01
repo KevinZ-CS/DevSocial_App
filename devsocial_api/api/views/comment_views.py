@@ -28,7 +28,7 @@ class CommentList(AuthenticatedAPIView):
 class CommentDetail(AuthenticatedAPIView):
 
     def get(self, request, pk):
-        # pdb.set_trace()
+        pdb.set_trace()
         comment = Comment.objects.get(id=pk)
         serializer = CommentSerializer(comment)
         return Response(serializer.data)
@@ -43,7 +43,7 @@ class CommentDetail(AuthenticatedAPIView):
 
     def delete(self, request, pk, user_pk, comment_pk):
         comment = Comment.objects.get(id=comment_pk)
-        if comment.user_id == user_pk:
+        if comment.user_id == int(user_pk):
             comment.delete()
             return Response({"message": "Comment successfully deleted!"}, status=status.HTTP_200_OK)
         else:

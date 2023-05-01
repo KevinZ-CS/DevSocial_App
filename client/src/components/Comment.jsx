@@ -18,6 +18,7 @@ const main = palette.neutral.main;
 const medium = palette.neutral.medium;
 const dark = palette.neutral.dark;
 
+
 const handleDeleteComment = async () => {
   const response = await fetch(
     `/api/posts/${postId}/comment/${loggedInUser}/${commentId}/delete/`,

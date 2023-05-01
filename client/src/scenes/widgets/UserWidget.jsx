@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setProfileUser } from 'state/authReducer';
+import { setSearchKeyword } from 'state/postsReducer';
 
 const UserWidget = ({ userId, setError }) => {
 
@@ -69,7 +70,10 @@ return (
     <FlexBetween
       gap="0.5rem"
       pb="1.1rem" //padding-bottom
-      onClick={() => {navigate(`/profile/${user.id}`)}}
+      onClick={() => {
+        navigate(`/profile/${user.id}`)
+        dispatch(setSearchKeyword(''))
+      }}
     >
       <FlexBetween gap="1rem">
         <UserImage image={image} />
