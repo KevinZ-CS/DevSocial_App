@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 import pdb
 
 
@@ -16,11 +17,19 @@ class AuthenticatedAPIView(APIView):
 class FriendsList(AuthenticatedAPIView):
 
     def get(self, request, pk):
-        friend_ids = Friend.objects.filter(user=pk).values_list('friend', flat=True)
+        try:
+            friend_ids = Friend.objects.filter(user=pk).values_list('friend', flat=True)
+            users = User.objects.filter(id__in=friend_ids)
+            serializer = UserPreviewSerializer(users, many=True) 
+            return Response(serializer.data)
+        except (ObjectDoesNotExist, ValueError):
+            return Response({'error': 'Friend not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # friend_ids = Friend.objects.filter(user=pk).values_list('friend', flat=True)
  
-        users = User.objects.filter(id__in=friend_ids)
-        serializer = UserPreviewSerializer(users, many=True) 
-        return Response(serializer.data)
+        # users = User.objects.filter(id__in=friend_ids)
+        # serializer = UserPreviewSerializer(users, many=True) 
+        # return Response(serializer.data)
     
 
 

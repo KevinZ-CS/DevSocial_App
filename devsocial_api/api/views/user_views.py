@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.serializers import UserSerializer
 from api.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -15,7 +15,10 @@ class UserDetail(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        user = User.objects.get(id=pk)
+        try:
+            user = User.objects.get(id=pk)
+        except (ObjectDoesNotExist, ValueError):
+            return Response({'error': '404: User not found.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 

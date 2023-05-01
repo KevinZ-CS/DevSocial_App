@@ -1,5 +1,4 @@
-import { Box, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, useMediaQuery, useTheme, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -9,39 +8,35 @@ import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
+import { useState } from "react";
+
+
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
-  const { userId } = useParams();
-  const token = useSelector((state) => state.auth.token);
 
-  const loggedInUser = useSelector((state) => state.auth.user);
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const profileUserId = useSelector((state) => state.auth.profileUser);
+const { userId } = useParams();
+const loggedInUser = useSelector((state) => state.auth.user);
+const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+const profileUserId = useSelector((state) => state.auth.profileUser);
+const theme = useTheme();
+const [error, setError] = useState('');
 
-  
 
-//   const getUser = async () => {
-//     const response = await fetch(`/api/users/${userId}`, {
-//       method: "GET",
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     const data = await response.json();
 
-//     if(response.ok) {
-//     setUser(data); } else {
-//         console.log(data)
-//     }
-//   };
-
-//   useEffect(() => {
-//     getUser();
-//   }, [userId]); 
-
-//   if (!profileUserId) return null;
-
-  return (
+return (
     <Box>
+      {error ? 
+        <Box
+        width="100%"
+        backgroundColor={theme.palette.background.alt}
+        p="1rem 6%"
+        textAlign="center" >
+        <Typography fontWeight="bold" fontSize="32px" color="primary">
+        {error}
+        </Typography>
+        </Box>
+      : 
+      <>
       <Navbar />
       <Box
         width="100%"
@@ -51,7 +46,7 @@ const ProfilePage = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={userId} />
+          <UserWidget userId={userId} setError={setError} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
@@ -67,7 +62,9 @@ const ProfilePage = () => {
             <FriendListWidget userId={userId} /> 
           </Box>
         )}
-      </Box>
+      </Box> 
+      </>
+      }
     </Box>
   );
 };

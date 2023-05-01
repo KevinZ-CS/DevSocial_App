@@ -22,10 +22,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     # path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
 
-    path('users/<int:pk>/', include([
+    path('users/<pk>/', include([
         path('', UserDetail.as_view(), name='user-detail'),    
         path('friends/', FriendsList.as_view(), name='friend-update'),
-        path('friends/<int:pk_friend>/update/', UpdateFriend.as_view(), name='friend-update'),
+        path('friends/<pk_friend>/update/', UpdateFriend.as_view(), name='friend-update'),
     ])),
 
     path('users/', UserCreate.as_view(), name='user-create'),
@@ -35,12 +35,12 @@ urlpatterns = [
     path('posts/', PostList.as_view(), name='post-list'),
     path('posts/create/', PostCreate.as_view(), name='post-create'),
     # path('post/<int:pk>/', PostDetail.as_view(), name='post-detail'),
-    path('posts/<int:pk>/', include([
+    path('posts/<pk>/', include([
         path('', PostDetail.as_view(), name='post-detail'), #the empty string '' represents the base path of the nested URLs
         # path('comments/', CommentList.as_view(), name='comment-list'),
         path('comment/create/', CommentCreate.as_view(), name='comment-create'),
-        path('comment/<int:user_pk>/<int:comment_pk>/delete/', CommentDetail.as_view(), name='comment-detail'),
-        path('like/<int:user_pk>/update/', UpdateLike.as_view(), name='update-like'),
+        path('comment/<user_pk>/<comment_pk>/delete/', CommentDetail.as_view(), name='comment-detail'),
+        path('like/<user_pk>/update/', UpdateLike.as_view(), name='update-like'),
     ])),
 
 

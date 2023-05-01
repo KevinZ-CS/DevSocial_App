@@ -1,30 +1,20 @@
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "state/authReducer";
 import { setPosts } from "state/postsReducer";
-
 import PostWidget from "./PostWidget";
 
 const PostsWidget = ({ userId }) => {
 
 const dispatch = useDispatch();
-
 const posts = useSelector((state) => state.posts.posts);
 const { pathname } = useLocation();
 const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
-
-
-
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
-
-
-
 
 const getPosts = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
@@ -55,69 +45,55 @@ const getPosts = async () => {
       }
     );
     const data = await response.json(); 
+    
     if(response.ok) {
       dispatch(setPosts(data))
-    // dispatch(setPosts({ posts: data })); 
   } else {
-      console.log(response)
+      console.log(data)
     }
   }    else {
       dispatch(setLogout())
   }
   };
 
-  // useEffect(() => {
-  //     getPosts();
-  // }, []); 
-
-  useEffect(() => {
-    if (profilePath === 'profile') {
-      getUserPosts(); //change this to filter maybe
-    } else {
-      getPosts();
-    }
-  }, [userId]); 
-
-  // useEffect(() => {   
-  //     getPosts();
-  // }, []); 
 
 
+useEffect(() => {
+  if (profilePath === 'profile') {
+    getUserPosts(); 
+  } else {
+    getPosts();
+  }
+}, [userId]); 
 
 
-// if(posts.data) {
-//   return null
-// }
-
-  // const postsDisplay = posts.filter((post) => post.user === parseInt(userId))
-
-  if(posts.length === 0) {
+if(posts.length === 0) {
     return null
   }
 
-  return (
-    <> 
-      {posts.map(
-        (post
-        ) => (
-          <PostWidget
-            key={post.id}
-            postId={post.id}
-            postUserId={post.userData.id}
-            name={`${post.userData.first_name} ${post.userData.last_name}`}
-            description={post.caption}
-            location={post.userData.location}
-            picturePath={post.image}
-            userPicturePath={post.userData.image}
-            github={post.github_url}
-            demo={post.demo_url}
-            likes={post.likes}
-            comments={post.comments}
-          />
-        )
-      )} 
-    </> 
-  );
+return (
+<> 
+  {posts.map(
+    (post
+    ) => (
+      <PostWidget
+        key={post.id}
+        postId={post.id}
+        postUserId={post.userData.id}
+        name={`${post.userData.first_name} ${post.userData.last_name}`}
+        description={post.caption}
+        location={post.userData.location}
+        picturePath={post.image}
+        userPicturePath={post.userData.image}
+        github={post.github_url}
+        demo={post.demo_url}
+        likes={post.likes}
+        comments={post.comments}
+      />
+    )
+  )} 
+</> 
+);
 };
 
 export default PostsWidget;

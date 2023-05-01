@@ -5,34 +5,15 @@ import UserWidget from "scenes/widgets/UserWidget";
 import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
-import { useEffect, useState } from "react";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 
 const HomePage = () => {
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
-  //maybe move fetch to get user
+const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+const userId = useSelector((state) => state.auth.user);
 
-  const userId = useSelector((state) => state.auth.user);
-  // const image = useSelector((state) => state.auth.image);
-  const token = useSelector((state) => state.auth.token);
-  const [user, setUser] = useState(null);
 
- 
-  // const getUser = async () => {
-  //   const response = await fetch(`/api/users/${userId}`, {
-  //     method: "GET",
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   });
-  //   const data = await response.json();
-  //   setUser(data);
-  // };
-
-  // useEffect(() => {
-  //   getUser();
-  // }, []); 
-
-  return (
+ return (
     <Box>
       <Navbar />
       <Box

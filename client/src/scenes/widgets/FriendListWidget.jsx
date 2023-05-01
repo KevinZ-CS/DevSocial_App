@@ -3,7 +3,7 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends, setProfileFriends } from "state/authReducer"; //need to create this in redux store for friendslit
+import { setFriends, setProfileFriends } from "state/authReducer"; 
 import { useLocation } from "react-router-dom";
 
 const FriendListWidget = ({ userId }) => {
@@ -22,10 +22,12 @@ const FriendListWidget = ({ userId }) => {
   //work on deleting post, maybe update?
   //patch usfer profile
   //add modals for confirmation messages
+  //work on error pages
+  //work on search bar
 
   const getFriends = async () => {
     const response = await fetch(
-      `/api/users/${loggedInUser}/friends/`, //we need to specify the userId because we want to show the friends of other users as well
+      `/api/users/${loggedInUser}/friends/`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -39,39 +41,36 @@ const FriendListWidget = ({ userId }) => {
   };
 
 
-  const getProfileFriends = async () => {
-    const response = await fetch(
-      `/api/users/${userId}/friends/`, //we need to specify the userId because we want to show the friends of other users as well
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+const getProfileFriends = async () => {
+  const response = await fetch(
+    `/api/users/${userId}/friends/`, 
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
 
-    const data = await response.json();
-    if(response.ok) {
-      dispatch(setProfileFriends(data))
- 
-    
-} else {console.log(data)}
-  };
+  const data = await response.json();
+  if(response.ok) {
+    dispatch(setProfileFriends(data))
 
-  useEffect(() => {
-    getFriends();
-  }, []); 
+  
+} else {
+  console.log(data) 
+}
+};
 
-  useEffect(() => {
-    if (profilePath === 'profile' && parseInt(userId) !==loggedInUser) {
-      getProfileFriends(); 
-    } 
-  }, [userId]); 
+useEffect(() => {
+  getFriends();
+}, []); 
 
-  console.log(friends)
-  console.log(profileFriends)
+useEffect(() => {
+  if (profilePath === 'profile' && parseInt(userId) !==loggedInUser) {
+    getProfileFriends(); 
+  } 
+}, [userId]); 
 
- 
-
-  return (
+return (
     <WidgetWrapper>
       <Typography
         color={palette.neutral.dark}

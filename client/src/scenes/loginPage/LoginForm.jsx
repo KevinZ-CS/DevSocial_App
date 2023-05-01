@@ -31,14 +31,11 @@ const { palette } = useTheme();
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const [error, setError] =  useState("");
-  
 const isNonMobile = useMediaQuery("(min-width:600px)");
-
 const csrftoken = getCookie('csrftoken');
 
 const login = async (values, onSubmitProps) => {
 
-    console.log(values)
 const response = await fetch(
     "/api/login/",
     {   headers: {
@@ -60,6 +57,7 @@ const response = await fetch(
          image: data.image,
          tokenExpiration: data.expires_at,
          refreshTokenExpiration: data.refresh_token_expires_in,
+         full_name: `${data.first_name} ${data.last_name}`,
         }))
        navigate("/home");
     } else {

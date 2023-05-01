@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core.exceptions import ObjectDoesNotExist
 import pdb
 
 class AuthenticatedAPIView(APIView):
@@ -26,13 +27,22 @@ class PostList(AuthenticatedAPIView):
 class PostDetail(AuthenticatedAPIView):
 
     def get(self, request, pk):
-        # pdb.set_trace()
-        posts = Post.objects.filter(user=pk).order_by('-created_at') 
-        serializer = PostSerializer(posts, many=True)
+        try:
+            posts = Post.objects.filter(user=pk).order_by('-created_at')
+        except (ObjectDoesNotExist, ValueError):
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+  
+        serializer = PostSerializer(posts, many=True) 
         return Response(serializer.data)
-        # post = Post.objects.get(id=pk)
-        # serializer = PostSerializer(post)
+
+
+
+
+        # pdb.set_trace()
+        # posts = Post.objects.filter(user=pk).order_by('-created_at') 
+        # serializer = PostSerializer(posts, many=True)
         # return Response(serializer.data)
+
 
     def put(self, request, pk):
         post = Post.objects.get(id=pk)

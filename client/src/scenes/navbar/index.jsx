@@ -21,40 +21,32 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state/authReducer";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-import { setPosts } from "state/postsReducer";
+
 
 const Navbar = () => {
-  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  
-  const theme = useTheme(); 
+const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+const dispatch = useDispatch();
+const navigate = useNavigate();
+const fullName = useSelector((state) => state.auth.full_name);
+const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+const theme = useTheme(); 
 
-  const neutralLight = theme.palette.neutral.light;
-  const dark = theme.palette.neutral.dark;
-  const background = theme.palette.background.default;
-  const primaryLight = theme.palette.primary.light;
-  const alt = theme.palette.background.alt;
+const neutralLight = theme.palette.neutral.light;
+const dark = theme.palette.neutral.dark;
+const background = theme.palette.background.default;
+const primaryLight = theme.palette.primary.light;
+const alt = theme.palette.background.alt;
+const primaryDark = theme.palette.primary.dark;
 
-  const primaryDark = theme.palette.primary.dark;
-
-//   const fullName = `${user.firstName} ${user.lastName}`;
-  const fullName = "Kevin Zheng";
-  
-
-  return (
+return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
         <Typography
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"  
           color="primary"
-          onClick={() => {
-            // dispatch(dispatch(setPosts([])))
-            navigate("/home")}}
+          onClick={() => {navigate("/home")}}
           sx={{
             "&:hover": {
               color: primaryDark,

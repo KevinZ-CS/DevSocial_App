@@ -2,28 +2,23 @@ import {
     ChatBubbleOutlineOutlined,
     FavoriteBorderOutlined,
     FavoriteOutlined,
-    ShareOutlined,
     Delete,
     EditOutlined,
     GitHub,
     PlayCircle,
   } from "@mui/icons-material";
-  import { Box, Divider, IconButton, Typography, useTheme, Card, CardContent, InputBase, Button } from "@mui/material";
+import { Box, IconButton, Typography, useTheme, Card, CardContent, InputBase, Button } from "@mui/material";
+import FlexBetween from "components/FlexBetween";
+import Friend from "components/Friend";
+import Comment from "components/Comment";
+import getCookie from "utils/GetCookies";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
-  import FlexBetween from "components/FlexBetween";
-  import Friend from "components/Friend";
-  import WidgetWrapper from "components/WidgetWrapper";
-  import UserImage from "components/UserImage";
-  import Comment from "components/Comment";
-  import getCookie from "utils/GetCookies";
-
-  import { useState } from "react";
-  import { useDispatch, useSelector } from "react-redux";
-  // import { setPost } from "state/authReducer";
 
 
   
-  const PostWidget = ({
+const PostWidget = ({
     postId,
     postUserId,
     name,
@@ -37,263 +32,239 @@ import {
     demo,
   }) => {
 
+const [isComments, setIsComments] = useState(false); 
+const token = useSelector((state) => state.auth.token);
+const [displayComments, setDisplayComments] = useState(comments)
+const { palette } = useTheme();
+const main = palette.neutral.main;
+const primary = palette.primary.main;
+const primaryDark = palette.primary.dark;
+
+const csrftoken = getCookie('csrftoken');
+const [comment, setComment] = useState('');
+const loggedInUser = useSelector((state) => state.auth.user);
+
+const [like, setLike] = useState(likes)
+
+const isLiked = like.some(obj => Object.values(obj).includes(loggedInUser));
+const likeCount = like.length; 
 
 
-  
 
-    const [isComments, setIsComments] = useState(false); //determines if we open the comments list or not
-    const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
-    // const loggedInUserId = useSelector((state) => state.user._id);
-    // const isLiked = Boolean(likes[loggedInUserId]); //remember that the likes for a post looks something like this {userId1: true, userId2: true } so for isLiked we're checking if the likes objects thats being passed down for this post contains a key that's the current user id and that key has a value, if it does it will return true if not it will return false
-    // const likeCount = Object.keys(likes).length; //this just grabs the length of the keys in the likes object
-
-   
-
-
-    const [displayComments, setDisplayComments] = useState(comments)
-
-    // const isLiked = false
-    // const likeCount = false
-
-
-  
-    const { palette } = useTheme();
-    const main = palette.neutral.main;
-    const primary = palette.primary.main;
-    const primaryDark = palette.primary.dark;
-
-    const csrftoken = getCookie('csrftoken');
-    const [comment, setComment] = useState('');
-    const loggedInUser = useSelector((state) => state.auth.user);
-
-    const [like, setLike] = useState(likes)
-
-    const isLiked = like.some(obj => Object.values(obj).includes(loggedInUser));
-    const likeCount = like.length; 
- 
-
-
-    const handlePostComment = async () => {
-      const response = await fetch(
-        `/api/posts/${postId}/comment/create/`,
-        {
-          method: "POST",
-          headers: { 
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken, 
-            Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          comment: comment,
-          user: loggedInUser,
-          post: postId
-        })
-        }
-      );
-      if (!response.ok) {
-        console.log(response);
-      }
-      const data = await response.json();
-        setComment('')
-        setDisplayComments([data, ...displayComments]);
-    };
+const handlePostComment = async () => {
+  const response = await fetch(
+    `/api/posts/${postId}/comment/create/`,
+    {
+      method: "POST",
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken, 
+        Authorization: `Bearer ${token}` },
+    body: JSON.stringify({
+      comment: comment,
+      user: loggedInUser,
+      post: postId
+    })
+    }
+  );
+  if (!response.ok) {
+    console.log(response);
+  }
+  const data = await response.json();
+    setComment('')
+    setDisplayComments([data, ...displayComments]);
+};
 
    
+
+const patchLike = async () => {
+  const response = await fetch(`/api/posts/${postId}/like/${loggedInUser}/update/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      'X-CSRFToken': csrftoken, 
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ 
+      post: postId,
+      user: loggedInUser,
+    }),
+  });
+  const updatedLike = await response.json(); 
   
-    const patchLike = async () => {
-      const response = await fetch(`/api/posts/${postId}/like/${loggedInUser}/update/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          'X-CSRFToken': csrftoken, 
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ 
-          post: postId,
-          user: loggedInUser,
-        }),
-      });
-      const updatedLike = await response.json(); //this gives us the updated post from the backend
-      
-      if(response.ok) {
-        if(updatedLike.message === "like") {
-          setLike([updatedLike.data, ...like])
-    
-        } else {
-          const updatedLikes = like.filter((user) => user.user !== loggedInUser)
-          setLike(updatedLikes)
-      }
+  if(response.ok) {
+    if(updatedLike.message === "like") {
+      setLike([updatedLike.data, ...like])
 
-      } else {
-        console.log(updatedLike)
-      }
-    
-    }; //this updates the likes
+    } else {
+      const updatedLikes = like.filter((user) => user.user !== loggedInUser)
+      setLike(updatedLikes)
+  }
+
+  } else {
+    console.log(updatedLike)
+  }
+
+}; 
   
 
-    return (
-      <Card sx  ={{  padding: "1.5rem 1.5rem 0.75rem 1.5rem", mb: "2rem", backgroundColor: palette.background.alt,
-      borderRadius: "0.75rem",}} >
-        <CardContent>
-      {/* <WidgetWrapper m="2rem 0"> */}
-        <Friend
-          friendId={postUserId}
-          name={name}
-          subtitle={location}
-          userPicturePath={userPicturePath}
-          friendListFlag={false}
-        />
-        <Typography color={main} sx={{ mt: "1rem" }}>
-          {description}
+return (
+  <Card sx  ={{  padding: "1.5rem 1.5rem 0.75rem 1.5rem", mb: "2rem", backgroundColor: palette.background.alt,
+  borderRadius: "0.75rem",}} >
+    <CardContent>
+  {/* <WidgetWrapper m="2rem 0"> */}
+    <Friend
+      friendId={postUserId}
+      name={name}
+      subtitle={location}
+      userPicturePath={userPicturePath}
+      friendListFlag={false}
+    />
+    <Typography color={main} sx={{ mt: "1rem" }}>
+      {description}
 
-        </Typography >
-          <br />
+    </Typography >
+      <br />
 
-          <FlexBetween gap="1rem" mt="-0.5rem" mb="0.5rem">
-            <FlexBetween gap="0.4rem">
-              {github&&<> 
-              <GitHub sx={{ fontSize: "30px" }} />
-                <Typography color={main} fontWeight="500"
-                sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}
-                >
-                <a href={github} target="_blank">Github.</a>
-                </Typography>
-              </>}
+      <FlexBetween gap="1rem" mt="-0.5rem" mb="0.5rem">
+        <FlexBetween gap="0.4rem">
+          {github&&<> 
+          <GitHub sx={{ fontSize: "30px" }} />
+            <Typography color={main} fontWeight="500"
+            sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}
+            >
+            <a href={github} target="_blank">Github.</a>
+            </Typography>
+          </>}
 
-              {demo&&<>
-              <PlayCircle sx={{ fontSize: "30px" }} />
-                <Typography color={main} fontWeight="500" sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}>
-                <a href={demo} target="_blank">Demo</a>
-                </Typography>
-              </>}
-            </FlexBetween>
-          </FlexBetween>
-          
-
-          
-
-
-          {/* <span style={{ color: palette.primary.dark }}>#ruby #rails </span> */}
-
-
-
-        {picturePath && (
-            <Typography sx={{ display: 'flex', justifyContent: 'center', m: "0 -2.5rem" }}>
-
-          <img
-            
-            width="100%"
-            // height="auto"
-            alt="post"
-            style={{ borderRadius: "0rem", marginTop: "0.75rem", maxHeight: '50rem', objectFit: "cover" }}
-            src={`api/${picturePath}`}
-          /> 
-             </Typography>
-          //this is the post picture
-        )}
-        <FlexBetween mt="0.25rem" ml="-1rem">
-          <FlexBetween gap="0.5rem">
-
-            <FlexBetween gap="0.3rem">
-              <IconButton onClick={patchLike}>
-                {isLiked ? (
-                  <FavoriteOutlined sx={{ color: primary }} />
-                ) : (
-                  <FavoriteBorderOutlined /> //this is the like icon and determining if someone liked it or not
-                )}
-              </IconButton>
-              <Typography>{likeCount}</Typography>
-            </FlexBetween>
-  
-            <FlexBetween gap="0.3rem">
-              <IconButton onClick={() => setIsComments(!isComments)}>
-                <ChatBubbleOutlineOutlined />
-              </IconButton>
-              <Typography>{displayComments.length}</Typography>
-            </FlexBetween>
-          </FlexBetween>
-          
-          <Box>
-          <IconButton>
-            <EditOutlined />
-          </IconButton>
-  
-          <IconButton>
-            <Delete />
-            {/* <ShareOutlined /> */}
-          </IconButton>
-          </Box>
-
+          {demo&&<>
+          <PlayCircle sx={{ fontSize: "30px" }} />
+            <Typography color={main} fontWeight="500" sx={{ '& a': { textDecoration: 'none', color: main, '&:hover': { color: primaryDark } } }}>
+            <a href={demo} target="_blank">Demo</a>
+            </Typography>
+          </>}
         </FlexBetween>
-        {isComments && (
-          <Box mt="0.5rem">
+      </FlexBetween>
+      
+      {/* <span style={{ color: palette.primary.dark }}>#ruby #rails </span> */}
+
+    {picturePath && (
+        <Typography sx={{ display: 'flex', justifyContent: 'center', m: "0 -2.5rem" }}>
+
+      <img
+        
+        width="100%"
+        // height="auto"
+        alt="post"
+        style={{ borderRadius: "0rem", marginTop: "0.75rem", maxHeight: '50rem', objectFit: "cover" }}
+        src={`api/${picturePath}`}
+      /> 
+          </Typography>
+      //this is the post picture
+    )}
+    <FlexBetween mt="0.25rem" ml="-1rem">
+      <FlexBetween gap="0.5rem">
+
+        <FlexBetween gap="0.3rem">
+          <IconButton onClick={patchLike}>
+            {isLiked ? (
+              <FavoriteOutlined sx={{ color: primary }} />
+            ) : (
+              <FavoriteBorderOutlined /> //this is the like icon and determining if someone liked it or not
+            )}
+          </IconButton>
+          <Typography>{likeCount}</Typography>
+        </FlexBetween>
+
+        <FlexBetween gap="0.3rem">
+          <IconButton onClick={() => setIsComments(!isComments)}>
+            <ChatBubbleOutlineOutlined />
+          </IconButton>
+          <Typography>{displayComments.length}</Typography>
+        </FlexBetween>
+      </FlexBetween>
+      
+      <Box>
+      <IconButton>
+        <EditOutlined />
+      </IconButton>
+
+      <IconButton>
+        <Delete />
+        {/* <ShareOutlined /> */}
+      </IconButton>
+      </Box>
+
+    </FlexBetween>
+    {isComments && (
+      <Box mt="0.5rem">
 
 {displayComments.map((comment, i) => (
-              <Box key={`${comment.userData.first_name}-${i}`} mt="1rem"> 
-            
-     
-            <Comment
-          friendId={postUserId}
-          name={`${comment.userData.first_name} ${comment.userData.last_name}`}
-          subtitle={comment.userData.location}
-          userPicturePath={comment.userData.image}
-          commentUser={comment.user}
-          comment={comment.comment}
-          setDisplayComments={setDisplayComments}
-          commentId={comment.id}
-          postId={postId}
-          commentsDisplay={displayComments}
-         
-        />
-        {/* <Typography color={main} sx={{ mt: "-1rem", marginLeft: "3.2rem" }}>
-          {comment.comment}
-        </Typography > */}
+          <Box key={`${comment.userData.first_name}-${i}`} mt="1rem"> 
+        
+  
+        <Comment
+      friendId={postUserId}
+      name={`${comment.userData.first_name} ${comment.userData.last_name}`}
+      subtitle={comment.userData.location}
+      userPicturePath={comment.userData.image}
+      commentUser={comment.user}
+      comment={comment.comment}
+      setDisplayComments={setDisplayComments}
+      commentId={comment.id}
+      postId={postId}
+      commentsDisplay={displayComments}
+      
+    />
+    {/* <Typography color={main} sx={{ mt: "-1rem", marginLeft: "3.2rem" }}>
+      {comment.comment}
+    </Typography > */}
 
 
-              </Box>
-            ))}
-
-                 <FlexBetween gap="1.5rem">
-          {/* <UserImage image={picturePath} /> */}
-          <InputBase
-            placeholder="Write a comment"
-            onChange={(e) => setComment(e.target.value)}
-            value={comment}
-            sx={{
-              width: "100%",
-              backgroundColor: palette.neutral.light,
-              borderRadius: "0.75rem",
-              padding: "0.5rem 1rem",
-              ml: "-0.9rem",
-              mt: "1rem",
-            }}
-          />
-          <Button    
-             disabled={!comment}
-             onClick={handlePostComment}
-          sx={{
-              // width: "100%",
-              color: palette.background.alt,
-              mt: "1rem",
-              backgroundColor: primary,
-              borderRadius: "0.5rem",
-              padding: "0.75rem 0.75rem",
-              "&:hover": { backgroundColor: palette.primary.dark },
-
-            }}>Post</Button>
-        </FlexBetween>
-
-       
-   
-
-
-            
-     
           </Box>
-        )}
-      {/* </WidgetWrapper> */}
-      </CardContent>
-      </Card>
+        ))}
+
+              <FlexBetween gap="1.5rem">
+      {/* <UserImage image={picturePath} /> */}
+      <InputBase
+        placeholder="Write a comment"
+        onChange={(e) => setComment(e.target.value)}
+        value={comment}
+        sx={{
+          width: "100%",
+          backgroundColor: palette.neutral.light,
+          borderRadius: "0.75rem",
+          padding: "0.5rem 1rem",
+          ml: "-0.9rem",
+          mt: "1rem",
+        }}
+      />
+      <Button    
+          disabled={!comment}
+          onClick={handlePostComment}
+      sx={{
+          // width: "100%",
+          color: palette.background.alt,
+          mt: "1rem",
+          backgroundColor: primary,
+          borderRadius: "0.5rem",
+          padding: "0.75rem 0.75rem",
+          "&:hover": { backgroundColor: palette.primary.dark },
+
+        }}>Post</Button>
+    </FlexBetween>
+
+    
+
+
+
+        
+  
+      </Box>
+    )}
+  {/* </WidgetWrapper> */}
+  </CardContent>
+  </Card>
     );
   };
   

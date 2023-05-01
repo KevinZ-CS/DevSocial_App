@@ -39,7 +39,9 @@ class UserLogin(APIView):
                         'expires_at': expires_at_timestamp,
                         'refresh_token_expires_in': refresh_token_expiration_timestamp,
                         'user_id': user_data['id'],
-                        'image': user_data['image']
+                        'image': user_data['image'],
+                        'first_name': user_data['first_name'],
+                        'last_name': user_data['last_name']
                     }
                     return Response(response, status=status.HTTP_200_OK)
             # If the password is incorrect, return an error message

@@ -8,6 +8,7 @@ const initialState = {
   tokenExpiration: null,
   refreshTokenExpiration: null,
   image: null,
+  full_name: null,
   friendsList: [],
   profileFriendsList: [],
   profileUser: null,
@@ -29,6 +30,7 @@ export const authSlice = createSlice({
       state.image = action.payload.image;
       state.tokenExpiration = action.payload.tokenExpiration;
       state.refreshTokenExpiration = action.payload.refreshTokenExpiration;
+      state.full_name = action.payload.full_name
     },
     setLogout: (state) => {
       state.user = null;

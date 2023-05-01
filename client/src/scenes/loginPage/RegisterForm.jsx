@@ -80,48 +80,8 @@ const handleSubmit = async (values, onSubmitProps) => {
         console.log(data)
 
     }
-    
-   
     };
 
-// const handleSubmit = async (values, onSubmitProps) => {
-
-// const formData = new FormData();
-//     for (let value in values) {
-//     formData.append(value, values[value]);
-//     } 
-//     formData.append("image", values.image);
-
-// register(formData)    
-
-// function register(data) { fetch(
-//     "api/users/",
-//     {   headers: {
-//         'X-CSRFToken': csrftoken },
-//         method: "POST",
-//         body: data,
-//     })
-//     .then((response) => {
-//         if(response.ok) {
-//            response.json().then((user) => {
-//             console.log(user) 
-//             onSubmitProps.resetForm(); 
-//             if (user) {
-//                 setPageType("login");
-//             } 
-        
-//         }) 
-
-//         } else {
-//             response.json().then((error) => {
-//                 setErrors(error)
-//                 console.log(error)})
-//         }
-//     })
-
-// }
-
-// };
 
 const {
     image,
