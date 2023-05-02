@@ -9,7 +9,8 @@ import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import { useState } from "react";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const ProfilePage = () => {
@@ -25,6 +26,7 @@ const [error, setError] = useState('');
 
 return (
     <Box>
+      <ToastContainer />
       {error ? 
         <Box
         width="100%"

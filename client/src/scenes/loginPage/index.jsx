@@ -2,6 +2,8 @@ import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import RegisterForm from "./RegisterForm";
 import Login from "./Login";
 import { useState } from "react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   
@@ -10,9 +12,18 @@ const isLogin = pageType === "login";
 const isRegister = pageType === "register";
 const theme = useTheme();
 
+
+
+
 return (
 
 <Box>
+
+  <ToastContainer 
+  // position="top-right" 
+  // autoClose={1000}
+  // hideProgressBar={true}
+  />
   <Box
     width="100%"
     backgroundColor={theme.palette.background.alt}

@@ -6,14 +6,21 @@ import {
     EditOutlined,
     GitHub,
     PlayCircle,
+    MoreHoriz,
   } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme, Card, CardContent, InputBase, Button } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import Comment from "components/Comment";
+import MoreOptionsDialog from "components/MoreOptionsDialog";
 import getCookie from "utils/GetCookies";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { setLogout } from "state/authReducer";
+import { useDispatch } from "react-redux";
+import { toast } from 'react-toastify';
+import { setPosts, setPostsDisplay } from "state/postsReducer";
+
 
 
 
@@ -33,12 +40,14 @@ const PostWidget = ({
   }) => {
 
 const [isComments, setIsComments] = useState(false); 
-const token = useSelector((state) => state.auth.token);
+// const token = useSelector((state) => state.auth.token);
 const [displayComments, setDisplayComments] = useState(comments)
 const { palette } = useTheme();
 const main = palette.neutral.main;
 const primary = palette.primary.main;
 const primaryDark = palette.primary.dark;
+const neutral = palette.neutral.dark;
+const background = palette.background.alt
 
 const csrftoken = getCookie('csrftoken');
 const [comment, setComment] = useState('');
@@ -49,9 +58,28 @@ const [like, setLike] = useState(likes)
 const isLiked = like.some(obj => Object.values(obj).includes(loggedInUser));
 const likeCount = like.length; 
 
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 
+const postsDisplay = useSelector((state) => state.posts.postsDisplay);
+const posts = useSelector((state) => state.posts.posts);
+
+const dispatch = useDispatch();
+
+const [dialogOpen, setDialogOpen] = useState(false);
+
+const handleDialogClose = () => {
+  setDialogOpen(false);
+};
+
+const handleMoreHorizClick = () => {
+  setDialogOpen(true);
+};
 
 const handlePostComment = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
   const response = await fetch(
     `/api/posts/${postId}/comment/create/`,
     {
@@ -72,12 +100,23 @@ const handlePostComment = async () => {
   }
   const data = await response.json();
     setComment('')
-    setDisplayComments([data, ...displayComments]);
+    setDisplayComments([data, ...displayComments]); 
+    toast.success('Comment Posted!', {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: true,
+    });
+  } 
+    
+    else {
+      dispatch(setLogout())
+    }
 };
 
    
 
 const patchLike = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
   const response = await fetch(`/api/posts/${postId}/like/${loggedInUser}/update/`, {
     method: "PUT",
     headers: {
@@ -104,8 +143,68 @@ const patchLike = async () => {
   } else {
     console.log(updatedLike)
   }
-
+  } else {
+    dispatch(setLogout())
+  }
 }; 
+
+const deletePost = async (postId) => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
+  
+    const response = await fetch(
+      `/api/posts/${postId}/`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'X-CSRFToken': csrftoken, 
+       
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      const updatedDisplayPosts = postsDisplay.filter((post) => post.id !== postId)
+      dispatch(setPosts(updatedDisplayPosts))
+      dispatch(setPostsDisplay(updatedDisplayPosts))
+
+      setDialogOpen(false);
+      console.log(data)
+   
+
+      toast.success("Post deleted successfully!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        style: {
+          backgroundColor: background,
+          color: neutral,
+        },
+      });
+    } else {
+      setDialogOpen(false);
+      console.log(data)
+      toast.error("Failed to delete the post. Try again later.", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        style: {
+          backgroundColor: background,
+          color: neutral,
+        },
+      });
+    }
+  }  else {
+    dispatch(setLogout())
+  }
+};
   
 
 return (
@@ -157,7 +256,7 @@ return (
         // height="auto"
         alt="post"
         style={{ borderRadius: "0rem", marginTop: "0.75rem", maxHeight: '50rem', objectFit: "cover" }}
-        src={`api/${picturePath}`}
+        src={`/api/${picturePath}`}
       /> 
           </Typography>
       //this is the post picture
@@ -184,16 +283,29 @@ return (
         </FlexBetween>
       </FlexBetween>
       
+      {loggedInUser === postUserId ?
       <Box>
-      <IconButton>
+        <IconButton onClick={handleMoreHorizClick} sx={{ padding: "0" }}>
+            <MoreHoriz />
+          </IconButton>
+        <MoreOptionsDialog 
+           open={dialogOpen}
+           handleClose={handleDialogClose}
+           postId={postId}
+           onDeletePost={deletePost}
+        />
+
+        
+      {/* <IconButton>
         <EditOutlined />
       </IconButton>
 
       <IconButton>
         <Delete />
-        {/* <ShareOutlined /> */}
-      </IconButton>
-      </Box>
+      </IconButton> */}
+
+      </Box> : null
+  }
 
     </FlexBetween>
     {isComments && (

@@ -16,6 +16,7 @@ import * as yup from "yup";
 import Dropzone from "react-dropzone"; 
 import FlexBetween from "components/FlexBetween";
 import { useState } from "react";
+import { toast } from 'react-toastify';
 import getCookie from "utils/GetCookies";
   
 const registerSchema = yup.object().shape({
@@ -52,8 +53,11 @@ const [errors, setErrors] = useState([]);
     
 const csrftoken = getCookie('csrftoken');
 
+const neutral = palette.neutral.dark;
+const background = palette.background.alt
+
 const handleSubmit = async (values, onSubmitProps) => {
-    console.log(values)
+  
     const formData = new FormData();
         for (let value in values) {
         formData.append(value, values[value]);
@@ -74,6 +78,16 @@ const handleSubmit = async (values, onSubmitProps) => {
         onSubmitProps.resetForm(); 
         if (data) {
             setPageType("login");
+            toast.success(
+                "Registration successful!",{
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                style: {
+                    backgroundColor: background,
+                    color: neutral,
+                  }, }
+              );
             } 
     } else {
         setErrors(data)

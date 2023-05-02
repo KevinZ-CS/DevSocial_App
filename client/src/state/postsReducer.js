@@ -15,7 +15,8 @@ export const postsSlice = createSlice({
       state.posts = action.payload;
     },
     addPost: (state, action) => {
-        state.posts.unshift(action.payload)
+        // state.posts.unshift(action.payload)
+        state.postsDisplay.unshift(action.payload)
     },
     setSearchKeyword: (state, action) => {
       state.searchKeyword = action.payload

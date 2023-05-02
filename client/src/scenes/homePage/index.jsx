@@ -6,19 +6,17 @@ import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const HomePage = () => {
 
 const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 const userId = useSelector((state) => state.auth.user);
 
-
-
-
-
- return (
+return (
     <Box>
+      <ToastContainer />
       <Navbar />
       <Box
         width="100%"

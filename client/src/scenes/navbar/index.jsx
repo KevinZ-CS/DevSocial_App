@@ -44,7 +44,7 @@ const alt = theme.palette.background.alt;
 const primaryDark = theme.palette.primary.dark;
 
 return (
-    <FlexBetween padding="1rem 6%" backgroundColor={alt}>
+    <FlexBetween padding="1rem 6%" backgroundColor={alt} >
       <FlexBetween gap="1.75rem">
         <Typography
           fontWeight="bold"
@@ -72,7 +72,7 @@ return (
             padding="0.1rem 1.5rem" 
           >
             <InputBase 
-            placeholder="Search..." 
+            placeholder="Search posts by users..." 
             value={searchKeyword}
             onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
             />
@@ -126,7 +126,10 @@ return (
               <MenuItem value={fullName} >
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem onClick={() => {
+                dispatch(setLogout())
+                dispatch(setSearchKeyword('')) }
+                }>Log Out</MenuItem>
             </Select>
           </FormControl>
         </FlexBetween>

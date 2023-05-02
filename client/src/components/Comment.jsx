@@ -3,11 +3,14 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserImage from "./UserImage";
 import getCookie from "utils/GetCookies";
+import { setLogout } from "state/authReducer";
+import { useDispatch } from "react-redux";
+import { toast } from 'react-toastify';
 
 const Comment = ({ name, userPicturePath, commentUser, comment, setDisplayComments, commentsDisplay, commentId, postId }) => {
 
 const navigate = useNavigate();
-const token = useSelector((state) => state.auth.token);
+const dispatch = useDispatch();
 const csrftoken = getCookie('csrftoken');
 const loggedInUser = useSelector((state) => state.auth.user);
 
@@ -17,9 +20,17 @@ const primaryDark = palette.primary.dark;
 const main = palette.neutral.main;
 const medium = palette.neutral.medium;
 const dark = palette.neutral.dark;
+const neutral = palette.neutral.dark;
+const background = palette.background.alt
+
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 
 
 const handleDeleteComment = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
   const response = await fetch(
     `/api/posts/${postId}/comment/${loggedInUser}/${commentId}/delete/`,
     {
@@ -35,10 +46,23 @@ const handleDeleteComment = async () => {
   if (response.ok) {
     const updatedDisplayComments = commentsDisplay.filter((comment) => comment.id !== commentId)
     setDisplayComments(updatedDisplayComments)
+    toast.success('Comment Deleted!', {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: true,
+      style: {
+        backgroundColor: background,
+        color: neutral,
+      },
+    });
   } else {
 
     console.log(data)
-  }
+  } 
+
+} else {
+  dispatch(setLogout())
+}
 };
 
 

@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "state/authReducer";
 import { setPosts, setPostsDisplay } from "state/postsReducer";
 import PostWidget from "./PostWidget";
+import {
+  Typography,
+  Container,
+} from "@mui/material";
 
 const PostsWidget = ({ userId }) => {
 
@@ -12,6 +16,7 @@ const posts = useSelector((state) => state.posts.posts);
 
 const { pathname } = useLocation();
 const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
+
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
@@ -20,7 +25,7 @@ const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExp
 const postsDisplay = useSelector((state) => state.posts.postsDisplay);
 const searchKeyword = useSelector((state) => state.posts.searchKeyword);
 
-console.log(searchKeyword)
+
 
 const getPosts = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
@@ -83,12 +88,17 @@ useEffect(() => {
 }, [userId]); 
 
 
-if(posts.length === 0) {
-    return null
-  }
+
 
 return (
-<> 
+<> { postsDisplay.length === 0 ? 
+
+<Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 4 }}>
+  <Typography sx={{ textAlign: 'center', fontSize:'0.9rem' }}>Cannot find any posts.</Typography>
+</Container>
+
+
+: <>
   {postsDisplay.map(
     (post
     ) => (
@@ -107,7 +117,8 @@ return (
         comments={post.comments}
       />
     )
-  )} 
+  )}  </>
+    }
 </> 
 );
 };

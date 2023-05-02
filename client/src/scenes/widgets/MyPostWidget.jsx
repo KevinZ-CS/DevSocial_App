@@ -25,8 +25,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "state/postsReducer";
 import getCookie from "utils/GetCookies";
+import { toast } from 'react-toastify';
+import { setLogout } from "state/authReducer";
 
-  const MyPostWidget = () => {
+const MyPostWidget = () => {
 
 const dispatch = useDispatch();
 const [isImage, setIsImage] = useState(false); 
@@ -37,17 +39,24 @@ const [demo, setDemo] = useState("");
 const { palette } = useTheme();
 const id = useSelector((state) => state.auth.user); 
 const picturePath = useSelector((state) => state.auth.image); 
-const token = useSelector((state) => state.auth.token);
+
 const isNonMobileScreens = useMediaQuery("(min-width: 1100px)");
 const isNonMobile = useMediaQuery("(min-width:600px)");
 const mediumMain = palette.neutral.mediumMain;
 const medium = palette.neutral.medium;
 const csrftoken = getCookie('csrftoken');
 
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
+
+
     //for all post make sure to use filter display since we will be trying to implement the search functionality as well for users name
     //the next step is believe is to create the url and view for this, remember to add the authorization in the post view as well
  
 const handlePost = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
 
   const formData = new FormData();
   formData.append("user", id);
@@ -77,8 +86,19 @@ const handlePost = async () => {
       dispatch(addPost(newPost))
       setImage(null);
       setPost("");
+      setDemo("");
+      setGithub("");
+      setIsImage(false);
+
+      toast.success('Successfully Posted!', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+      });
   } else {
     console.log(response)
+  } } else {
+    dispatch(setLogout())
   }
 };
   

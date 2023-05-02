@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setProfileUser } from 'state/authReducer';
 import { setSearchKeyword } from 'state/postsReducer';
+import { setLogout } from "state/authReducer";
 
 const UserWidget = ({ userId, setError }) => {
 
@@ -25,14 +26,22 @@ const medium = palette.neutral.medium;
 const main = palette.neutral.main;
 const primaryDark = palette.primary.dark;
 
-const token = useSelector((state) => state.auth.token);
+
 const friends = useSelector((state) => state.auth.friendsList);
 const profileFriends = useSelector((state) => state.auth.profileFriendsList);
 const loggedInUser = useSelector((state) => state.auth.user);
 const user = useSelector((state) => state.auth.profileUser);
-  
+
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
+
+
+
 
 const getUser = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
   const response = await fetch(`/api/users/${userId}`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
@@ -43,6 +52,8 @@ const getUser = async () => {
   dispatch(setProfileUser(data)); } else {
     setError(data.error)
     console.log(data)
+  } } else {
+    dispatch(setLogout())
   }
 };
 

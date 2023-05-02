@@ -22,8 +22,8 @@ const FriendListWidget = ({ userId }) => {
   //work on deleting post, maybe update?
   //patch usfer profile
   //add modals for confirmation messages
-  //work on error pages
-  //work on search bar
+ 
+  //add the token and expire token verification for each fetch request
 
   const getFriends = async () => {
     const response = await fetch(
