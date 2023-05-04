@@ -68,7 +68,8 @@ const handleDeleteComment = async () => {
 
 
   return (
-    <Box display="flex" alignItems="flex-start" mb="1rem">
+  
+    <Box display="flex" alignItems="flex-start" mb="1rem" >
     {name && userPicturePath && (
       <Box
         sx={{
@@ -103,7 +104,7 @@ const handleDeleteComment = async () => {
           {name}
         </Typography>
       )}
-      <Typography variant="h6" color={main}>
+      <Typography variant="h6" color={main} style={{ wordWrap: 'break-word' }}  maxWidth= "510px" >
         {comment}
       </Typography>
       {/* <Typography variant="caption" color="text.secondary">
@@ -138,6 +139,7 @@ const handleDeleteComment = async () => {
       )}
     </Box>
   </Box>
+ 
   
   );
 };

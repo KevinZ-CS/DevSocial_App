@@ -16,13 +16,17 @@ import {
   LightMode,
   Menu,
   Close,
+  Settings,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state/authReducer";
 import { setSearchKeyword, setPostsDisplay } from "state/postsReducer";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-
+import SettingsNavBar from "components/SettingsNavbar";
+import EditAccountForm from "components/EditAccountForm";
+import { toast } from 'react-toastify';
+import getCookie from "utils/GetCookies";
 
 const Navbar = () => {
 
@@ -42,6 +46,106 @@ const background = theme.palette.background.default;
 const primaryLight = theme.palette.primary.light;
 const alt = theme.palette.background.alt;
 const primaryDark = theme.palette.primary.dark;
+
+
+const csrftoken = getCookie('csrftoken');
+
+const token = useSelector((state) => state.auth.token);
+const refreshToken = useSelector((state) => state.auth.refreshToken);
+const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
+const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
+
+const neutral = theme.palette.neutral.dark;
+const backgroundToast = theme.palette.background.alt
+
+const [dialogOpen, setDialogOpen] = useState(false);
+const [editAccOpen, setEditAccOpen] = useState(false);
+
+
+const deleteAcc = async (userId) => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
+  
+    const response = await fetch(
+      `/api/users/${userId}/`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          'X-CSRFToken': csrftoken, 
+       
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      dispatch(setLogout())
+      dispatch(setSearchKeyword(''))
+      setDialogOpen(false);
+      console.log(data)
+   
+
+      toast.success("Account deleted successfully!", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        style: {
+          backgroundColor: backgroundToast,
+          color: neutral,
+        },
+      });
+      
+    } else {
+      setDialogOpen(false);
+      console.log(data)
+      toast.error("Failed to delete account. Try again later.", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        style: {
+          backgroundColor: backgroundToast,
+          color: neutral,
+        },
+      });
+    }
+  }  else {
+    dispatch(setLogout())
+  }
+};
+
+
+function handleKeyDown(e) {
+  if(searchKeyword&&e.keyCode === 13) {
+  e.preventDefault()
+  navigate("/home")
+  dispatch(setPostsDisplay(posts.filter((post) =>
+  (post.userData.first_name + post.userData.last_name)
+  .toLowerCase()
+  .includes(searchKeyword.split(' ').join('').toLowerCase())
+  )))
+}}
+
+
+
+
+const handleDialogClose = () => {
+  setDialogOpen(false);
+};
+
+const handleEditFormClose = () => {
+  setEditAccOpen(false)
+};
+
+const handleEditAccOpen = () => {
+  setEditAccOpen(true)
+};
+
 
 return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt} >
@@ -64,6 +168,19 @@ return (
         >
           DevSocial
         </Typography>
+
+        <SettingsNavBar 
+           open={dialogOpen}
+           handleClose={handleDialogClose}
+           editForm={handleEditAccOpen}
+           onDeleteAcc={deleteAcc}
+        />
+
+        <EditAccountForm 
+               open={editAccOpen}
+               handleClose={handleEditFormClose}
+        />
+
         {isNonMobileScreens && ( 
           <FlexBetween
             backgroundColor={neutralLight}
@@ -75,6 +192,7 @@ return (
             placeholder="Search posts by users..." 
             value={searchKeyword}
             onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
+            onKeyDown={handleKeyDown}
             />
 
             <IconButton onClick={() => {
@@ -125,6 +243,14 @@ return (
             >
               <MenuItem value={fullName} >
                 <Typography>{fullName}</Typography>
+              </MenuItem>
+              <MenuItem 
+              onClick={() => {
+                setDialogOpen(true)
+              }
+                }
+              >
+                Settings
               </MenuItem>
               <MenuItem onClick={() => {
                 dispatch(setLogout())

@@ -8,8 +8,13 @@ import {
   ListItemButton,
   Divider,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
-const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }) => {
+const SettingsNavBar = ({ open, handleClose, onDeleteAcc, editForm }) => {
+
+const loggedInUser = useSelector((state) => state.auth.user);
+
+
   return (
     <Dialog
       onClose={handleClose}
@@ -25,7 +30,6 @@ const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }
           borderRadius: "16px",
         },
       }}
- 
     >
       <DialogContent>
         <List
@@ -34,9 +38,9 @@ const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }
           }}
         >
           <ListItem disablePadding>
-            <ListItemButton onClick={() => onDeletePost(postId)}>
+            <ListItemButton onClick={() => onDeleteAcc(loggedInUser)}> 
               <ListItemText
-                primary="Delete"
+                primary="Delete Account"
                 sx={{
                   textAlign: "center",
                   color: "red",
@@ -51,7 +55,7 @@ const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }
                 editForm()
                 }}>
               <ListItemText
-                primary="Edit"
+                primary="Edit Account"
                 sx={{
                   textAlign: "center",
                 }}
@@ -59,17 +63,7 @@ const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }
             </ListItemButton>
           </ListItem>
           <Divider />
-          {/* <ListItem disablePadding>
-            <ListItemButton onClick={() => console.log("Share clicked")}>
-              <ListItemText
-                primary="Share"
-                sx={{
-                  textAlign: "center",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <Divider /> */}
+   
           <ListItem disablePadding>
             <ListItemButton onClick={handleClose}>
               <ListItemText
@@ -86,4 +80,4 @@ const MoreOptionsDialog = ({ open, handleClose, postId, onDeletePost, editForm }
   );
 };
 
-export default MoreOptionsDialog;
+export default SettingsNavBar;

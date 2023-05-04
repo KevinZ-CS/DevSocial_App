@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core.files.storage import default_storage
 import pdb
 
 
@@ -21,11 +22,17 @@ class UserDetail(APIView):
             return Response({'error': '404: User not found.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+    
+   
 
-    def put(self, request, pk):
+    def patch(self, request, pk):
         user = User.objects.get(id=pk)
-        serializer = UserSerializer(user, data=request.data)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        # pdb.set_trace()
+        # print(serializer.errors)
         if serializer.is_valid():
+            if 'image' in request.data:
+                default_storage.delete(user.image.name)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

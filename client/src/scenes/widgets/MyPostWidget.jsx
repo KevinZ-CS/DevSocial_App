@@ -50,6 +50,7 @@ const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
+const [imageUrl, setImageUrl] = useState("");
 
 
     //for all post make sure to use filter display since we will be trying to implement the search functionality as well for users name
@@ -63,7 +64,7 @@ const handlePost = async () => {
   formData.append("caption", post);
   if (image) {
     formData.append("image", image); 
-    formData.append("picturePath", image.name);
+    // formData.append("picturePath", image.name);
   }
 
   if (github) {
@@ -129,7 +130,11 @@ return (
         <Dropzone
           acceptedFiles={["image/*"]}
           multiple={false}
-          onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+          onDrop={(acceptedFiles) => {
+            setImage(acceptedFiles[0])
+            const fileUrl = URL.createObjectURL(acceptedFiles[0]);
+            setImageUrl(fileUrl);
+          }}
         >
           {({ getRootProps, getInputProps }) => (
             <FlexBetween>
@@ -144,10 +149,17 @@ return (
                 {!image ? (
                   <p>Add Image Here</p> //Below is where you change image name to image 
                 ) : (
-                  <FlexBetween>
-                    <Typography>{image.name}</Typography> 
-                    <EditOutlined />
-                  </FlexBetween>
+                  <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                    <img src={imageUrl} alt="uploaded" height="200px" style={{ maxWidth: "100%" }}/>
+                    {/* <Typography>{image.name}</Typography> 
+                    <EditOutlined /> */}
+                  </Box>
                 )}
               </Box>
               {image && ( 

@@ -52,10 +52,14 @@ export const authSlice = createSlice({
     setProfileUser: (state, action) => {
       state.profileUser = action.payload;
     },
+    updateLogin: (state, action) => {
+      state.image = action.payload.image;
+      state.full_name = action.payload.full_name
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, addFriend, removeFriend, setProfileFriends, setProfileUser } =
+export const { setMode, setLogin, setLogout, setFriends, addFriend, removeFriend, setProfileFriends, setProfileUser, updateLogin } =
   authSlice.actions
 
 export default authSlice.reducer;

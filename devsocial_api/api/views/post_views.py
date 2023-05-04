@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
 import pdb
 
 class AuthenticatedAPIView(APIView):
@@ -44,10 +45,12 @@ class PostDetail(AuthenticatedAPIView):
         # return Response(serializer.data)
 
 
-    def put(self, request, pk):
+    def patch(self, request, pk):
         post = Post.objects.get(id=pk)
-        serializer = PostSerializer(post, data=request.data)
+        serializer = PostSerializer(post, data=request.data, partial=True)
         if serializer.is_valid():
+            if 'image' in request.data:
+                default_storage.delete(post.image.name)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -60,6 +63,7 @@ class PostDetail(AuthenticatedAPIView):
 class PostCreate(AuthenticatedAPIView):
     def post(self, request):
         serializer = PostSerializer(data=request.data)
+        # pdb.set_trace()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

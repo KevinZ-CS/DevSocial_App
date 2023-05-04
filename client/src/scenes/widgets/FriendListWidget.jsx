@@ -19,11 +19,12 @@ const FriendListWidget = ({ userId }) => {
   const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
 
 
-  //work on deleting post, maybe update?
+
   //patch usfer profile
   //add modals for confirmation messages
- 
   //add the token and expire token verification for each fetch request
+  //add settings to nabar instead of pen to userprofile, instead replace pen with add friend button
+
 
   const getFriends = async () => {
     const response = await fetch(

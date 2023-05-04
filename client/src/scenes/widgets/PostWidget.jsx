@@ -13,13 +13,14 @@ import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import Comment from "components/Comment";
 import MoreOptionsDialog from "components/MoreOptionsDialog";
+import EditPostForm from "components/EditPostForm";
 import getCookie from "utils/GetCookies";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setLogout } from "state/authReducer";
-import { useDispatch } from "react-redux";
 import { toast } from 'react-toastify';
 import { setPosts, setPostsDisplay } from "state/postsReducer";
+
 
 
 
@@ -69,6 +70,15 @@ const posts = useSelector((state) => state.posts.posts);
 const dispatch = useDispatch();
 
 const [dialogOpen, setDialogOpen] = useState(false);
+const [editPostOpen, setEditPostOpen] = useState(false);
+
+const handleEditFormClose = () => {
+  setEditPostOpen(false)
+};
+
+const handleEditFormOpen = () => {
+  setEditPostOpen(true)
+};
 
 const handleDialogClose = () => {
   setDialogOpen(false);
@@ -209,7 +219,7 @@ const deletePost = async (postId) => {
 
 return (
   <Card sx  ={{  padding: "1.5rem 1.5rem 0.75rem 1.5rem", mb: "2rem", backgroundColor: palette.background.alt,
-  borderRadius: "0.75rem",}} >
+  borderRadius: "0.75rem" }} >
     <CardContent>
   {/* <WidgetWrapper m="2rem 0"> */}
     <Friend
@@ -219,7 +229,7 @@ return (
       userPicturePath={userPicturePath}
       friendListFlag={false}
     />
-    <Typography color={main} sx={{ mt: "1rem" }}>
+    <Typography color={main} sx={{ mt: "1rem" }} style={{ wordWrap: 'break-word' }}  maxWidth= "625px">
       {description}
 
     </Typography >
@@ -291,8 +301,18 @@ return (
         <MoreOptionsDialog 
            open={dialogOpen}
            handleClose={handleDialogClose}
+           editForm={handleEditFormOpen}
            postId={postId}
            onDeletePost={deletePost}
+        />
+           <EditPostForm 
+           open={editPostOpen}
+           handleClose={handleEditFormClose}
+           postId={postId}
+           description={description}
+           picturePath={picturePath}
+           githubUrl={github}
+           demoUrl={demo}
         />
 
         

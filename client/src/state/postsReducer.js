@@ -23,19 +23,25 @@ export const postsSlice = createSlice({
   },
     setPostsDisplay: (state, action) => {
     state.postsDisplay = action.payload
-},
-
-    // setPost: (state, action) => {
-    //   const updatedPosts = state.posts.map((post) => {
-    //     if (post._id === action.payload.post._id) return action.payload.post; 
-    //     return post;
-    //   });
-    //   state.posts = updatedPosts;
-    // },
+  },
+  updatePosts: (state, action) => {
+      const updatedPosts = state.posts.map((post) => {
+      if (post.id === action.payload.id) return action.payload; 
+      return post;
+     });
+      state.posts = updatedPosts;
+  },
+  updatePostsDisplay: (state, action) => {
+    const updatedPosts = state.postsDisplay.map((post) => {
+      if (post.id === action.payload.id) return action.payload; 
+      return post;
+      });
+      state.postsDisplay = updatedPosts;
+  },
   },
 });
 
-export const { setPosts, addPost, setSearchKeyword, setPostsDisplay } =
+export const { setPosts, addPost, setSearchKeyword, setPostsDisplay, updatePosts, updatePostsDisplay } =
   postsSlice.actions;
 
 export default postsSlice.reducer;
