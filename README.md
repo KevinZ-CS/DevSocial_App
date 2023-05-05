@@ -14,6 +14,11 @@ the sleek styling of Material-UI. To ensure efficient global state management,
 Redux Toolkit has been integrated into the application. The backend API is built 
 using Django REST framework and is powered by PostgreSQL as the primary database.
 
+# Built With
+
+![ReactJS](https://img.shields.io/badge/ReactJS-17.0.2-blue)
+
+
 ## Installation
 To get started with the Devsocial project, first fork and clone this repository to your local machine. Once you have the code, you'll need to install the necessary dependencies for both the frontend and backend.
 
