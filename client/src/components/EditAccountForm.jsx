@@ -24,6 +24,7 @@ import { setLogout } from "state/authReducer";
 import { toast } from 'react-toastify';
 import { updateLogin, setProfileUser } from "state/authReducer";
 import getCookie from "utils/GetCookies";
+import { setPosts, setPostsDisplay } from "state/postsReducer";
 
 const registerSchema = yup.object().shape({
     first_name: yup.string().required("required"),
@@ -54,6 +55,31 @@ const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 const loggedInUser = useSelector((state) => state.auth.user);
+
+const searchKeyword = useSelector((state) => state.posts.searchKeyword);
+
+const getPosts = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
+  const response = await fetch("/api/posts/", {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await response.json();
+  if(response.ok) {
+    dispatch(setPosts(data))
+    dispatch(setPostsDisplay(data.filter((post) =>
+    (post.userData.first_name + post.userData.last_name)
+    .toLowerCase()
+    .includes(searchKeyword.split(' ').join('').toLowerCase())
+    )))
+} else {
+    console.log(response)
+  }
+}   
+else {
+    dispatch(setLogout())
+  }
+};
 
 const getUser = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
@@ -119,6 +145,7 @@ const handleUpdate = async (values, onSubmitProps) => {
   
         dispatch(setProfileUser(updatedAcc))
         getUser()
+        getPosts()
         setButtonDisable(true)
         handleClose()
         toast.success('Account Updated!', {
