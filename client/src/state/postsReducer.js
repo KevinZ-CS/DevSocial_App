@@ -6,7 +6,6 @@ const initialState = {
   postsDisplay: [],
 };
 
-
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
@@ -15,14 +14,13 @@ export const postsSlice = createSlice({
       state.posts = action.payload;
     },
     addPost: (state, action) => {
-        // state.posts.unshift(action.payload)
-        state.postsDisplay.unshift(action.payload)
+      state.postsDisplay.unshift(action.payload)
     },
     setSearchKeyword: (state, action) => {
       state.searchKeyword = action.payload
   },
     setPostsDisplay: (state, action) => {
-    state.postsDisplay = action.payload
+      state.postsDisplay = action.payload
   },
   updatePosts: (state, action) => {
       const updatedPosts = state.posts.map((post) => {

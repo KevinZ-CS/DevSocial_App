@@ -34,8 +34,6 @@ const [error, setError] =  useState("");
 const isNonMobile = useMediaQuery("(min-width:600px)");
 const csrftoken = getCookie('csrftoken');
 
-
-
 const login = async (values, onSubmitProps) => {
 
 const response = await fetch(
@@ -155,9 +153,6 @@ return (
             textAlign="center"
         >
             Don't have an account? Sign Up here.
-            {/* {isLogin
-            ? "Don't have an account? Sign Up here."
-            : "Already have an account? Login here."} */}
         </Typography>
         </Box>
     </form>

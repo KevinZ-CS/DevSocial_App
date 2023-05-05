@@ -3,13 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.serializers import UserSerializer
 from api.models import User
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.files.storage import default_storage
-import pdb
-
 
 class UserDetail(APIView):
     authentication_classes = [JWTAuthentication, SessionAuthentication, BasicAuthentication]
@@ -23,13 +21,9 @@ class UserDetail(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
     
-   
-
     def patch(self, request, pk):
         user = User.objects.get(id=pk)
         serializer = UserSerializer(user, data=request.data, partial=True)
-        # pdb.set_trace()
-        # print(serializer.errors)
         if serializer.is_valid():
             if 'image' in request.data:
                 default_storage.delete(user.image.name)
@@ -50,20 +44,3 @@ class UserCreate(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class UserCreate(APIView):
-#     def post(self, request):
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#         # If the serializer is not valid, try to create a User instance and validate it
-#         user = User(**request.data)
-#         try:
-#             user.full_clean()
-#         except ValidationError as e:
-#             # Extract the error messages from the validation error and return them as the response
-#             return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)
-
-#         # If the user instance is valid, return the serializer errors as the response
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

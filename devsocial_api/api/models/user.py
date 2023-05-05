@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-import bcrypt
-import pdb
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -14,7 +12,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.is_active = True  # set is_active to True by default
+        user.is_active = True  
         user.save(using=self._db)
         return user
 
@@ -77,20 +75,11 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
-
-
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if self.password:
-    #         # Hash the password before saving it to the database
-    #         self.password = bcrypt.hashpw(self.password.encode(), bcrypt.gensalt()).decode()
-    #         super(User, self).save(*args, **kwargs)
 
   

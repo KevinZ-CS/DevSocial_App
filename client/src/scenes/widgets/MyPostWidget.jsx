@@ -1,5 +1,4 @@
 import {
-    EditOutlined,
     DeleteOutlined,
     GifBoxOutlined,
     ImageOutlined,
@@ -20,7 +19,6 @@ import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "state/postsReducer";
@@ -31,31 +29,28 @@ import { setLogout } from "state/authReducer";
 const MyPostWidget = () => {
 
 const dispatch = useDispatch();
+const { palette } = useTheme();
+const mediumMain = palette.neutral.mediumMain;
+const medium = palette.neutral.medium;
+
 const [isImage, setIsImage] = useState(false); 
 const [image, setImage] = useState(null); 
 const [post, setPost] = useState("");
 const [github, setGithub] = useState("");
 const [demo, setDemo] = useState("");
-const { palette } = useTheme();
+
 const id = useSelector((state) => state.auth.user); 
 const picturePath = useSelector((state) => state.auth.image); 
 
-const isNonMobileScreens = useMediaQuery("(min-width: 1100px)");
 const isNonMobile = useMediaQuery("(min-width:600px)");
-const mediumMain = palette.neutral.mediumMain;
-const medium = palette.neutral.medium;
-const csrftoken = getCookie('csrftoken');
 
+const csrftoken = getCookie('csrftoken');
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 const [imageUrl, setImageUrl] = useState("");
 
-
-    //for all post make sure to use filter display since we will be trying to implement the search functionality as well for users name
-    //the next step is believe is to create the url and view for this, remember to add the authorization in the post view as well
- 
 const handlePost = async () => {
   if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
 
@@ -64,7 +59,6 @@ const handlePost = async () => {
   formData.append("caption", post);
   if (image) {
     formData.append("image", image); 
-    // formData.append("picturePath", image.name);
   }
 
   if (github) {
@@ -83,7 +77,6 @@ const handlePost = async () => {
   });
   const newPost = await response.json(); 
   if(response.ok) {
-
       dispatch(addPost(newPost))
       setImage(null);
       setPost("");
@@ -141,13 +134,13 @@ return (
               <Box
                 {...getRootProps()}
                 border={`2px dashed ${palette.primary.main}`}
-                p="1rem"
+                p="0rem"
                 width="100%"
                 sx={{ "&:hover": { cursor: "pointer" } }}
               >
                 <input {...getInputProps()} />
                 {!image ? (
-                  <p>Add Image Here</p> //Below is where you change image name to image 
+                  <p style={{ marginLeft: "1rem" }}>Add Image Here</p> 
                 ) : (
                   <Box
                   sx={{
@@ -156,9 +149,7 @@ return (
                     alignItems: "center",
                   }}
                 >
-                    <img src={imageUrl} alt="uploaded" height="200px" style={{ maxWidth: "100%" }}/>
-                    {/* <Typography>{image.name}</Typography> 
-                    <EditOutlined /> */}
+                    <img src={imageUrl} alt="uploaded" height="auto" style={{ maxWidth: "100%" }}/>
                   </Box>
                 )}
               </Box>

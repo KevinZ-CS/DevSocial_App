@@ -24,7 +24,7 @@ const persistConfig = {
   key: 'auth',
   storage, 
   version: 1,
-  blacklist: ['friendsList', 'profileFriendsList', 'profileUser'],
+  blacklist: ['friendsList', 'profileFriendsList', 'profileUser', 'accountDeleted'],
 };
 
 const reducers = combineReducers({

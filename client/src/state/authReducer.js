@@ -12,8 +12,8 @@ const initialState = {
   friendsList: [],
   profileFriendsList: [],
   profileUser: null,
+  accountDeleted: false,
 };
-
 
 export const authSlice = createSlice({
   name: "auth",
@@ -23,7 +23,6 @@ export const authSlice = createSlice({
       state.mode = state.mode === "light" ? "dark" : "light"; 
     },
     setLogin: (state, action) => {
-      console.log(action.payload)
       state.token = action.payload.token
       state.user = action.payload.user
       state.refreshToken = action.payload.refreshToken
@@ -56,10 +55,13 @@ export const authSlice = createSlice({
       state.image = action.payload.image;
       state.full_name = action.payload.full_name
     },
+    setAccountDeleted: (state, action) => {
+      state.accountDeleted = action.payload;
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, addFriend, removeFriend, setProfileFriends, setProfileUser, updateLogin } =
+export const { setMode, setLogin, setLogout, setFriends, addFriend, removeFriend, setProfileFriends, setProfileUser, updateLogin, setAccountDeleted } =
   authSlice.actions
 
 export default authSlice.reducer;

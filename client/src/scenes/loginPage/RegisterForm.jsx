@@ -10,11 +10,9 @@ import {
     CardContent,
     FormHelperText,
   } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup"; 
 import Dropzone from "react-dropzone"; 
-import FlexBetween from "components/FlexBetween";
 import { useState } from "react";
 import { toast } from 'react-toastify';
 import getCookie from "utils/GetCookies";
@@ -47,14 +45,16 @@ const initialValuesRegister = {
 }; 
     
 const RegisterForm = ({ setPageType, isLogin, isRegister }) => {
-const { palette } = useTheme();
-const isNonMobile = useMediaQuery("(min-width:600px)");
-const [errors, setErrors] = useState([]);
-    
-const csrftoken = getCookie('csrftoken');
 
+const { palette } = useTheme();
 const neutral = palette.neutral.dark;
 const background = palette.background.alt
+const isNonMobile = useMediaQuery("(min-width:600px)");
+
+const [errors, setErrors] = useState([]);
+const [imageUrl, setImageUrl] = useState("");
+const csrftoken = getCookie('csrftoken');
+
 
 const handleSubmit = async (values, onSubmitProps) => {
   
@@ -189,7 +189,6 @@ return (
                 sx={{ gridColumn: "span 4" }}
                 multiline
                 rows={2}
-                // maxRows={4}
                 />
             <TextField
                 label="Github Url"
@@ -224,25 +223,32 @@ return (
             <Dropzone
                 acceptedFiles=".jpg,.jpeg,.png,.gif"
                 multiple={false}
-                onDrop={(acceptedFiles) =>
+                onDrop={(acceptedFiles) => {
                 setFieldValue("image", acceptedFiles[0])
+                const fileUrl = URL.createObjectURL(acceptedFiles[0]);
+                setImageUrl(fileUrl); }
                 }
                 >
             {({ getRootProps, getInputProps }) => (
                 <Box
                     {...getRootProps()} 
                     border={`2px dashed ${palette.primary.main}`}
-                    p="1rem" 
+                    p="0rem" 
                     sx={{ "&:hover": { cursor: "pointer" } }}
                     >
                     <input {...getInputProps()} />
                     {!values.image ? (
-                    <p>Add Picture Here</p>
+                    <p style={{ marginLeft: "1rem" }}>Add Picture Here</p>
                     ) : (
-                    <FlexBetween>
-                        <Typography>{values.image.name}</Typography>
-                        <EditOutlinedIcon />
-                    </FlexBetween>
+                        <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={imageUrl} alt="uploaded" height="auto" style={{ maxWidth: "100%" }}/>
+                        </Box>
                     )}
                 </Box>
                     )}
@@ -282,8 +288,6 @@ return (
             {password && <FormHelperText sx={{ gridColumn: "span 4 ", color: "red", fontSize: "0.75rem", mt: "-1rem" }}>{password}</FormHelperText>}
    
             </Box>
-
-            
 
         {/* BUTTONS */}
             <Box>

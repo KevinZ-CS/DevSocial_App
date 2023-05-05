@@ -20,7 +20,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
 
     path('users/<pk>/', include([
         path('', UserDetail.as_view(), name='user-detail'),    
@@ -30,22 +29,16 @@ urlpatterns = [
 
     path('users/', UserCreate.as_view(), name='user-create'),
 
-
     path('login/', UserLogin.as_view(), name='user-login'),
     path('posts/', PostList.as_view(), name='post-list'),
     path('posts/create/', PostCreate.as_view(), name='post-create'),
-    # path('post/<int:pk>/', PostDetail.as_view(), name='post-detail'),
+    
     path('posts/<pk>/', include([
         path('', PostDetail.as_view(), name='post-detail'), #the empty string '' represents the base path of the nested URLs
-        # path('comments/', CommentList.as_view(), name='comment-list'),
         path('comment/create/', CommentCreate.as_view(), name='comment-create'),
         path('comment/<user_pk>/<comment_pk>/delete/', CommentDetail.as_view(), name='comment-detail'),
         path('like/<user_pk>/update/', UpdateLike.as_view(), name='update-like'),
     ])),
-
-
-
-    # path('comment/', CommentCreate.as_view(), name='comment-create'),
 
 ]
 

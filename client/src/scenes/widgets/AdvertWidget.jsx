@@ -29,8 +29,7 @@ const AdvertWidget = () => {
         <Typography color={medium}>bioaqua.com</Typography>
       </FlexBetween>
       <Typography color={medium} m="0.5rem 0">
-        Your pathway to stunning and immaculate beauty and made sure your skin
-        is exfoliating skin and shining like light.
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus, eveniet? Aliquam, reprehenderit beatae! Tempora neque nam pariatur minus, ea esse cupiditate porro, voluptatibus possimus numquam a ex quisquam ipsum voluptate.
       </Typography>
     </WidgetWrapper>
   );

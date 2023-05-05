@@ -1,5 +1,4 @@
 import {
-  EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
 } from "@mui/icons-material"; 
@@ -17,10 +16,10 @@ import { setLogout } from "state/authReducer";
 
 const UserWidget = ({ userId, setError }) => {
 
-const { palette } = useTheme();
 const navigate = useNavigate();
 const dispatch = useDispatch();
 
+const { palette } = useTheme();
 const dark = palette.neutral.dark;
 const medium = palette.neutral.medium;
 const main = palette.neutral.main;
@@ -37,9 +36,6 @@ const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
 
-
-
-
 const getUser = async () => {
   if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
   const response = await fetch(`/api/users/${userId}`, {
@@ -51,7 +47,6 @@ const getUser = async () => {
   if(response.ok) {
   dispatch(setProfileUser(data)); } else {
     setError(data.error)
-    console.log(data)
   } } else {
     dispatch(setLogout())
   }
@@ -80,7 +75,7 @@ return (
     {/* FIRST ROW */}
     <FlexBetween
       gap="0.5rem"
-      pb="1.1rem" //padding-bottom
+      pb="1.1rem"
       onClick={() => {
         navigate(`/profile/${user.id}`)
         dispatch(setSearchKeyword(''))
@@ -105,17 +100,8 @@ return (
           <Typography color={medium}>
             {parseInt(userId) === loggedInUser ? `${friends.length} ${friends.length > 1 ? 'friends' : 'friend'}  ` : `${profileFriends.length} ${profileFriends.length > 1 ? 'friends' : 'friend'}`} 
             </Typography>
-          {/* <Typography color={medium}>{friends.length} friends</Typography> */}
         </Box>
       </FlexBetween>
-      <EditOutlined 
-          sx={{
-          "&:hover": {
-            color: palette.primary.dark,
-            cursor: "pointer",
-          },
-        }}
-      />
     </FlexBetween>
 
     <Divider />

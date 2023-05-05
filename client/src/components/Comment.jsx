@@ -11,23 +11,18 @@ const Comment = ({ name, userPicturePath, commentUser, comment, setDisplayCommen
 
 const navigate = useNavigate();
 const dispatch = useDispatch();
-const csrftoken = getCookie('csrftoken');
-const loggedInUser = useSelector((state) => state.auth.user);
 
 const { palette } = useTheme();
-const primaryLight = palette.primary.light;
-const primaryDark = palette.primary.dark;
 const main = palette.neutral.main;
-const medium = palette.neutral.medium;
-const dark = palette.neutral.dark;
 const neutral = palette.neutral.dark;
 const background = palette.background.alt
 
+const csrftoken = getCookie('csrftoken');
+const loggedInUser = useSelector((state) => state.auth.user);
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
-
 
 const handleDeleteComment = async () => {
   if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
@@ -56,20 +51,13 @@ const handleDeleteComment = async () => {
       },
     });
   } else {
-
     console.log(data)
-  } 
+  } } else {
+  dispatch(setLogout()) }};
 
-} else {
-  dispatch(setLogout())
-}
-};
-
-
-
-  return (
+return (
   
-    <Box display="flex" alignItems="flex-start" mb="1rem" >
+  <Box display="flex" alignItems="flex-start" mb="1rem" >
     {name && userPicturePath && (
       <Box
         sx={{
@@ -83,7 +71,7 @@ const handleDeleteComment = async () => {
           navigate(0);
         }}
       >
-          <UserImage image={userPicturePath} size="35px" />
+        <UserImage image={userPicturePath} size="35px" />
       </Box>
     )}
     <Box display="flex" flexDirection="column" justifyContent="center">
@@ -104,13 +92,11 @@ const handleDeleteComment = async () => {
           {name}
         </Typography>
       )}
-      <Typography variant="h6" color={main} style={{ wordWrap: 'break-word' }}  maxWidth= "510px" >
+       <Typography variant="h6" color={main} style={{ wordWrap: 'break-word' }}  maxWidth= "510px" >
         {comment}
-      </Typography>
-      {/* <Typography variant="caption" color="text.secondary">
-        {dateTimeAgo}
-      </Typography> */}
+       </Typography>
     </Box>
+
     <Box marginLeft="auto">
       {loggedInUser === commentUser && (
         <Button
@@ -122,26 +108,22 @@ const handleDeleteComment = async () => {
             "&:hover": {
               backgroundColor: "transparent",
             },
-          }}
-        >
-          <Typography
-            variant="caption"
-            color={main}
-            sx={{
-              "&:hover": {
-                color: "red",
-              },
-            }}
-          >
-            Delete
-          </Typography>
-        </Button>
+          }} >
+
+      <Typography
+        variant="caption"
+        color={main}
+        sx={{
+          "&:hover": {
+            color: "red",
+          },
+        }}
+      >
+        Delete
+      </Typography>
+      </Button>
       )}
     </Box>
-  </Box>
- 
-  
-  );
-};
+  </Box> )};
 
 export default Comment;

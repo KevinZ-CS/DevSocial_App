@@ -8,19 +8,14 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
-import pdb
 
 class AuthenticatedAPIView(APIView):
     authentication_classes = [JWTAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-
 class PostList(AuthenticatedAPIView):
 
     def get(self, request):
-        # posts = Post.objects.select_related('user_id').order_by('-created_at') 
-        # posts = Post.objects.prefetch_related('post_id', 'user_id').order_by('-created_at')
-        # posts = Post.objects.order_by('-created_at') 
         posts = Post.objects.all().order_by('-created_at') 
         serializer = PostSerializer(posts, many=True) 
         return Response(serializer.data)
@@ -32,18 +27,8 @@ class PostDetail(AuthenticatedAPIView):
             posts = Post.objects.filter(user=pk).order_by('-created_at')
         except (ObjectDoesNotExist, ValueError):
             return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
-  
         serializer = PostSerializer(posts, many=True) 
         return Response(serializer.data)
-
-
-
-
-        # pdb.set_trace()
-        # posts = Post.objects.filter(user=pk).order_by('-created_at') 
-        # serializer = PostSerializer(posts, many=True)
-        # return Response(serializer.data)
-
 
     def patch(self, request, pk):
         post = Post.objects.get(id=pk)
@@ -63,7 +48,6 @@ class PostDetail(AuthenticatedAPIView):
 class PostCreate(AuthenticatedAPIView):
     def post(self, request):
         serializer = PostSerializer(data=request.data)
-        # pdb.set_trace()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class UserSerializer(serializers.ModelSerializer):
 
     first_name = serializers.CharField(allow_blank=False, allow_null=False, required=True, error_messages={

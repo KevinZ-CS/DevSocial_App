@@ -7,39 +7,32 @@ import { setFriends, setProfileFriends } from "state/authReducer";
 import { useLocation } from "react-router-dom";
 
 const FriendListWidget = ({ userId }) => {
+
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const { palette } = useTheme();
+
   const token = useSelector((state) => state.auth.token);
   const loggedInUser = useSelector((state) => state.auth.user);
-
   const friends = useSelector((state) => state.auth.friendsList);
   const profileFriends = useSelector((state) => state.auth.profileFriendsList);
 
-  const { pathname } = useLocation();
   const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
 
+const getFriends = async () => {
+  const response = await fetch(
+    `/api/users/${loggedInUser}/friends/`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
 
-
-  //patch usfer profile
-  //add modals for confirmation messages
-  //add the token and expire token verification for each fetch request
-  //add settings to nabar instead of pen to userprofile, instead replace pen with add friend button
-
-
-  const getFriends = async () => {
-    const response = await fetch(
-      `/api/users/${loggedInUser}/friends/`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    const data = await response.json();
-    if(response.ok) {
-    dispatch(setFriends(data)) 
-    } else {console.log(data)}
-  };
+  const data = await response.json();
+  if(response.ok) {
+  dispatch(setFriends(data)) 
+  } else {console.log(data)}
+};
 
 
 const getProfileFriends = async () => {
@@ -53,13 +46,8 @@ const getProfileFriends = async () => {
 
   const data = await response.json();
   if(response.ok) {
-    dispatch(setProfileFriends(data))
-
-  
-} else {
-  console.log(data) 
-}
-};
+    dispatch(setProfileFriends(data)) } else {
+  console.log(data) }};
 
 useEffect(() => {
   getFriends();
@@ -72,43 +60,43 @@ useEffect(() => {
 }, [userId]); 
 
 return (
-    <WidgetWrapper>
-      <Typography
-        color={palette.neutral.dark}
-        variant="h5"
-        fontWeight="500"
-        sx={{ mb: "1.5rem" }}
-      >
-        Friend List
-      </Typography>
-      <Box display="flex" flexDirection="column" gap="1.5rem">
+  <WidgetWrapper>
+    <Typography
+      color={palette.neutral.dark}
+      variant="h5"
+      fontWeight="500"
+      sx={{ mb: "1.5rem" }}
+    >
+      Friend List
+    </Typography>
+    <Box display="flex" flexDirection="column" gap="1.5rem">
 
-        {profilePath === 'profile' && parseInt(userId) !==loggedInUser ? 
-            <> 
-        {profileFriends.map((friend) => (
+      {profilePath === 'profile' && parseInt(userId) !==loggedInUser ? 
+          <> 
+      {profileFriends.map((friend) => (
+      <Friend
+          key={friend.id}
+          friendId={friend.id}
+          name={`${friend.first_name} ${friend.last_name}`}
+          subtitle={friend.occupation}
+          userPicturePath={friend.image}
+          currentProfileId={userId}
+          friendListFlag={true}
+      />
+      ))} </>  :    <>
+      {friends.map((friend) => (
         <Friend
-            key={friend.id}
-            friendId={friend.id}
-            name={`${friend.first_name} ${friend.last_name}`}
-            subtitle={friend.occupation}
-            userPicturePath={friend.image}
-            currentProfileId={userId}
-            friendListFlag={true}
+          key={friend.id}
+          friendId={friend.id}
+          name={`${friend.first_name} ${friend.last_name}`}
+          subtitle={friend.occupation}
+          userPicturePath={friend.image}
+          currentProfileId={userId}
         />
-        ))} </>  :    <>
-        {friends.map((friend) => (
-          <Friend
-            key={friend.id}
-            friendId={friend.id}
-            name={`${friend.first_name} ${friend.last_name}`}
-            subtitle={friend.occupation}
-            userPicturePath={friend.image}
-            currentProfileId={userId}
-          />
-        ))}  </>
-        }
-      </Box>
-    </WidgetWrapper>
+      ))}  </>
+      }
+    </Box>
+  </WidgetWrapper>
   );
 };
 

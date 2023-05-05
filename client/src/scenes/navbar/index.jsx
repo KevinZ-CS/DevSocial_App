@@ -16,47 +16,41 @@ import {
   LightMode,
   Menu,
   Close,
-  Settings,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "state/authReducer";
+import { setMode, setLogout, setAccountDeleted } from "state/authReducer";
 import { setSearchKeyword, setPostsDisplay } from "state/postsReducer";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import SettingsNavBar from "components/SettingsNavbar";
 import EditAccountForm from "components/EditAccountForm";
-import { toast } from 'react-toastify';
 import getCookie from "utils/GetCookies";
+
 
 const Navbar = () => {
 
-const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
 const dispatch = useDispatch();
 const navigate = useNavigate();
-const fullName = useSelector((state) => state.auth.full_name);
-const searchKeyword = useSelector((state) => state.posts.searchKeyword);
-const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
 const theme = useTheme(); 
-
-const posts = useSelector((state) => state.posts.posts);
-
 const neutralLight = theme.palette.neutral.light;
 const dark = theme.palette.neutral.dark;
 const background = theme.palette.background.default;
-const primaryLight = theme.palette.primary.light;
 const alt = theme.palette.background.alt;
 const primaryDark = theme.palette.primary.dark;
 
+const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+
+const fullName = useSelector((state) => state.auth.full_name);
+const searchKeyword = useSelector((state) => state.posts.searchKeyword);
+const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+const posts = useSelector((state) => state.posts.posts);
 
 const csrftoken = getCookie('csrftoken');
-
 const token = useSelector((state) => state.auth.token);
 const refreshToken = useSelector((state) => state.auth.refreshToken);
 const tokenExpiration = useSelector((state) => state.auth.tokenExpiration);
 const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExpiration);
-
-const neutral = theme.palette.neutral.dark;
-const backgroundToast = theme.palette.background.alt
 
 const [dialogOpen, setDialogOpen] = useState(false);
 const [editAccOpen, setEditAccOpen] = useState(false);
@@ -84,41 +78,14 @@ const deleteAcc = async (userId) => {
       dispatch(setLogout())
       dispatch(setSearchKeyword(''))
       setDialogOpen(false);
-      console.log(data)
-   
-
-      toast.success("Account deleted successfully!", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        progress: undefined,
-        style: {
-          backgroundColor: backgroundToast,
-          color: neutral,
-        },
-      });
-      
+      dispatch(setAccountDeleted(true))
     } else {
       setDialogOpen(false);
-      console.log(data)
-      toast.error("Failed to delete account. Try again later.", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        progress: undefined,
-        style: {
-          backgroundColor: backgroundToast,
-          color: neutral,
-        },
-      });
     }
   }  else {
     dispatch(setLogout())
   }
 };
-
 
 function handleKeyDown(e) {
   if(searchKeyword&&e.keyCode === 13) {
@@ -130,9 +97,6 @@ function handleKeyDown(e) {
   .includes(searchKeyword.split(' ').join('').toLowerCase())
   )))
 }}
-
-
-
 
 const handleDialogClose = () => {
   setDialogOpen(false);
@@ -328,6 +292,15 @@ return (
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
+                <MenuItem 
+              onClick={() => {
+                setIsMobileMenuToggled(!isMobileMenuToggled)
+                setDialogOpen(true)
+              }
+                }
+              >
+                Settings
+              </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out
                 </MenuItem>

@@ -12,8 +12,6 @@ import {
 const PostsWidget = ({ userId }) => {
 
 const dispatch = useDispatch();
-const posts = useSelector((state) => state.posts.posts);
-
 const { pathname } = useLocation();
 const profilePath = pathname.split("/")[1]; // extracts "profile" from "/profile/123"
 
@@ -24,8 +22,6 @@ const refreshTokenExpiration = useSelector((state) => state.auth.refreshTokenExp
 
 const postsDisplay = useSelector((state) => state.posts.postsDisplay);
 const searchKeyword = useSelector((state) => state.posts.searchKeyword);
-
-
 
 const getPosts = async () => {
     if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
@@ -44,40 +40,36 @@ const getPosts = async () => {
   } else {
       console.log(response)
     }
-  } 
-    
-    else {
-        dispatch(setLogout())
-    }
-  };
-
-  const getUserPosts = async () => {
-    if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
-    const response = await fetch(
-      `/api/posts/${userId}/`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    const data = await response.json(); 
-    
-    if(response.ok) {
-      dispatch(setPosts(data))
-      dispatch(setPostsDisplay(data.filter((post) =>
-      (post.userData.first_name + post.userData.last_name)
-      .toLowerCase()
-      .includes(searchKeyword.split(' ').join('').toLowerCase())
-      )))
-  } else {
-      console.log(data)
-    }
-  }    else {
+  }   
+  else {
       dispatch(setLogout())
-  }
+    }
   };
 
-
+const getUserPosts = async () => {
+  if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
+  const response = await fetch(
+    `/api/posts/${userId}/`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  const data = await response.json(); 
+  
+  if(response.ok) {
+    dispatch(setPosts(data))
+    dispatch(setPostsDisplay(data.filter((post) =>
+    (post.userData.first_name + post.userData.last_name)
+    .toLowerCase()
+    .includes(searchKeyword.split(' ').join('').toLowerCase())
+    )))
+    } else {
+        console.log(data)
+      }
+    } else {
+      dispatch(setLogout())
+    }};
 
 useEffect(() => {
   if (profilePath === 'profile') {
@@ -88,15 +80,12 @@ useEffect(() => {
 }, [userId]); 
 
 
-
-
 return (
 <> { postsDisplay.length === 0 ? 
 
 <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 4 }}>
   <Typography sx={{ textAlign: 'center', fontSize:'0.9rem' }}>Cannot find any posts.</Typography>
 </Container>
-
 
 : <>
   {postsDisplay.map(

@@ -16,13 +16,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const ProfilePage = () => {
 
 const { userId } = useParams();
-const loggedInUser = useSelector((state) => state.auth.user);
-const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-const profileUserId = useSelector((state) => state.auth.profileUser);
 const theme = useTheme();
+const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+const loggedInUser = useSelector((state) => state.auth.user);
+const profileUserId = useSelector((state) => state.auth.profileUser);
 const [error, setError] = useState('');
-
-
 
 return (
     <Box>

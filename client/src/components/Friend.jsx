@@ -26,7 +26,6 @@ const primaryLight = palette.primary.light;
 const primaryDark = palette.primary.dark;
 const main = palette.neutral.main;
 const medium = palette.neutral.medium;
-
 const neutral = palette.neutral.dark;
 const background = palette.background.alt
 
@@ -57,7 +56,6 @@ const patchFriend = async () => {
   const data = await response.json();
 
   if(data.message === 'friend') {
-      console.log(data)
       dispatch(addFriend(data.data))
       toast.success('Friend Added!', {
         position: "top-right",
@@ -69,7 +67,6 @@ const patchFriend = async () => {
         },
       });
   } else {
-      console.log(data)
       dispatch(removeFriend(friendId))
       toast.success('Friend Removed!', {
         position: "top-right",
@@ -86,38 +83,39 @@ const patchFriend = async () => {
 }
 };
 
-  return (
-    <FlexBetween>
-      <FlexBetween gap="1rem" mt="-0.75rem">
-        <UserImage image={userPicturePath} size="55px" />
-        <Box
-          onClick={() => {
-            navigate(`/profile/${friendId}`);
-            dispatch(setSearchKeyword(''))
-          }}
-        >
-          <Typography
-            color={main}
-            variant="h5"
-            fontWeight="500"
-            sx={{
-              "&:hover": {
-                color: palette.primary.dark,
-                cursor: "pointer",
-              },
-            }}
-          >
-            {name}
-          </Typography>
-          <Typography color={medium} fontSize="0.75rem">
-            {subtitle}
-          </Typography>
-        </Box>
-      </FlexBetween>
-      {loggedInUser === friendId || friendListFlag ? null :
+return (
+  <FlexBetween>
+  <FlexBetween gap="1rem" mt="-0.75rem">
+    <UserImage image={userPicturePath} size="55px" />
+      <Box
+        onClick={() => {
+          navigate(`/profile/${friendId}`);
+          dispatch(setSearchKeyword(''))
+        }}
+      >
+      <Typography
+        color={main}
+        variant="h5"
+        fontWeight="500"
+        sx={{
+          "&:hover": {
+            color: palette.primary.dark,
+            cursor: "pointer",
+          },
+        }}
+      >
+      {name}
+     </Typography>
+     <Typography color={medium} fontSize="0.75rem">
+      {subtitle}
+     </Typography>
+     </Box>
+    </FlexBetween>
+
+    {loggedInUser === friendId || friendListFlag ? null :
       <IconButton
         onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem", mr: "-0.5rem" }}
+        sx={{ backgroundColor: primaryLight, p: "0.35rem", mr: "-0.5rem" }}
       >
         {isFriend ? (
           <PersonRemoveOutlined sx={{ color: primaryDark }} />
@@ -125,7 +123,8 @@ const patchFriend = async () => {
           <PersonAddOutlined sx={{ color: primaryDark }} /> 
         )}
       </IconButton> }
-    </FlexBetween>
+      
+  </FlexBetween>
   );
 };
 
