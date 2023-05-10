@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from storages.backends.s3boto3 import S3Boto3Storage
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -64,7 +65,7 @@ class User(AbstractBaseUser):
         blank=False,
         null=False,
     )
-    image = models.ImageField(upload_to='images/', blank=False, null=False)
+    image = models.ImageField(upload_to='images/', blank=False, null=False, storage=S3Boto3Storage())
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

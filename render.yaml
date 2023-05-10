@@ -1,0 +1,46 @@
+services:
+  - name: frontend
+    env:
+      - key: REACT_APP_API_URL
+        value: https://backend-devsocial-api.onrender.com/api/
+    buildCommand: cd client && npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    port: 3000
+
+  - name: backend
+    buildCommand: cd devsocial_api && pip install -r requirements.txt
+    startCommand: gunicorn devsocial_api.wsgi:application --bind 0.0.0.0:8000
+    healthCheckPath: /health
+    port: 8000
+
+  - name: webserver
+    buildCommand: |
+      apt-get update
+      apt-get install -y nginx
+      rm /etc/nginx/sites-enabled/default
+      cp /app/nginx.conf /etc/nginx/sites-enabled/
+    startCommand: nginx -g "daemon off;"
+    healthCheckPath: /
+    port: 8080
+
+volumes:
+  - name: static-data
+    mountPath: /app/static
+
+routes:
+  - path: /*
+    service: frontend
+
+  - path: /api/*
+    service: backend
+
+  - path: /static/*
+    volume: static-data
+
+  - path: /nginx_status
+    service: webserver
+    type: internal
+
+build:
+  dockerfilePath: Dockerfile
