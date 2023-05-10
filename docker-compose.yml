@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
@@ -17,7 +17,7 @@ services:
   backend:
     build:
       context: ./devsocial_api
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
     command: gunicorn devsocial_api.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static-data:/app/static
