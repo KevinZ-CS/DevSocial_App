@@ -7,6 +7,11 @@ WORKDIR /client
 # Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
+# Install required packages for Debconf
+RUN apk add --no-cache \
+    dialog \
+    libterm-readline-gnu
+
 # Install app dependencies
 RUN npm install
 
