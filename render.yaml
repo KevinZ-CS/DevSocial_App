@@ -7,12 +7,16 @@ services:
     startCommand: npm run start
     healthCheckPath: /
     port: 3000
+    build:
+      dockerfilePath: client/Dockerfile
 
   - name: backend
     buildCommand: cd devsocial_api && pip install -r requirements.txt
     startCommand: gunicorn devsocial_api.wsgi:application --bind 0.0.0.0:8000
     healthCheckPath: /health
     port: 8000
+    build:
+      dockerfilePath: devsocial_api/Dockerfile
 
   - name: webserver
     buildCommand: |
@@ -23,6 +27,8 @@ services:
     startCommand: nginx -g "daemon off;"
     healthCheckPath: /
     port: 8080
+    build:
+      dockerfilePath: Dockerfile
 
 volumes:
   - name: static-data
@@ -41,6 +47,3 @@ routes:
   - path: /nginx_status
     service: webserver
     type: internal
-
-build:
-  dockerfilePath: Dockerfile
