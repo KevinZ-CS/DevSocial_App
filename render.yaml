@@ -8,7 +8,7 @@ services:
     healthCheckPath: /
     port: 3000
     build:
-      dockerfilePath: client/Dockerfile.production
+      dockerfilePath: client/Dockerfile
 
   - name: backend
     buildCommand: cd devsocial_api && pip install -r requirements.txt
@@ -16,7 +16,7 @@ services:
     healthCheckPath: /health
     port: 8000
     build:
-      dockerfilePath: devsocial_api/Dockerfile.production
+      dockerfilePath: devsocial_api/Dockerfile
 
   - name: webserver
     buildCommand: |
@@ -28,7 +28,7 @@ services:
     healthCheckPath: /
     port: 8080
     build:
-      dockerfilePath: Dockerfile.production
+      dockerfilePath: Dockerfile
 
 volumes:
   - name: static-data
