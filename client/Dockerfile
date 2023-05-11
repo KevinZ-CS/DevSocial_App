@@ -14,11 +14,17 @@ ENV TERM=xterm
 # Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
+RUN apt-get update && \
+    apt-get install -y dialog libterm-readline-gnu-perl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install required packages for Debconf
-RUN apk add --no-cache \
-    dialog \
-    libterm-readline-gnu \
-    perl-term-readline-gnu
+# RUN apk add --no-cache \
+#     dialog \
+#     libterm-readline-gnu \
+#     perl-term-readline-gnu
+
 
 
 
