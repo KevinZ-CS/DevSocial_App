@@ -15,9 +15,9 @@ ENV TERM=xterm
 COPY package*.json ./
 
 RUN apt-get update && \
-    apt-get install -y dialog libterm-readline-gnu-perl && \
-    apt-get clean && \
+    apt-get install -y dialog apt-utils && \
     rm -rf /var/lib/apt/lists/*
+
 
 # Install required packages for Debconf
 # RUN apk add --no-cache \
