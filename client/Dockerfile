@@ -5,8 +5,8 @@ FROM node:14-alpine
 WORKDIR /client
 
 # Set environment variables to avoid debconf warnings
-ENV DEBIAN_FRONTEND=newt
-# ARG DEBIAN_FRONTEND=noninteractive
+
+ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm
 
 # Copy package.json and package-lock.json to the container
@@ -15,7 +15,8 @@ COPY package*.json ./
 # Install required packages for Debconf
 RUN apk add --no-cache \
     dialog \
-    libterm-readline-gnu
+    libterm-readline-gnu \
+    perl-term-readline-gnu
 
 
 
