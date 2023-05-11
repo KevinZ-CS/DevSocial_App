@@ -6,7 +6,8 @@ WORKDIR /client
 
 # Set environment variables to avoid debconf warnings
 
-ARG DEBIAN_FRONTEND=noninteractive
+# ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=newt
 ENV TERM=xterm
 
 # Copy package.json and package-lock.json to the container
