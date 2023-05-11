@@ -5,7 +5,8 @@ FROM node:14-alpine
 WORKDIR /client
 
 # Set environment variables to avoid debconf warnings
-ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=newt
+# ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm
 
 # Copy package.json and package-lock.json to the container
