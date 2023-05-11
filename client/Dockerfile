@@ -9,7 +9,7 @@ WORKDIR /client
 ARG DEBIAN_FRONTEND=noninteractive
 # ENV DEBIAN_FRONTEND noninteractive
 # ENV DEBCONF_NONINTERACTIVE_SEEN true
-# ENV TERM=xterm
+ENV TERM=xterm
 
 # Copy package.json and package-lock.json to the container
 COPY package*.json ./
