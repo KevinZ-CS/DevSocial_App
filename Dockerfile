@@ -1,7 +1,16 @@
 FROM ubuntu:latest
 
-# Install nginx
-RUN apt-get update && apt-get install -y nginx
+# # Install nginx
+# RUN apt-get update && apt-get install -y nginx
+
+# Install nginx and required packages
+RUN apt-get update && apt-get install -y nginx \
+    openssl \
+    ca-certificates \
+    perl
+
+# Install the required Perl modules
+RUN cpan install Term::ReadLine
 
 # Remove default nginx configuration and copy custom configuration
 # RUN rm /etc/nginx/conf.d/default.conf
