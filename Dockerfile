@@ -1,5 +1,9 @@
 FROM ubuntu:latest
 
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y dialog apt-utils
+
 # Install nginx
 RUN apt-get update && apt-get install -y nginx
 
