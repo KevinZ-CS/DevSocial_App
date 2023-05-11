@@ -2,7 +2,7 @@
 FROM node:14-alpine
 
 # Set the working directory to /app
-WORKDIR /client
+WORKDIR /app
 
 # Set environment variables to avoid debconf warnings
 
