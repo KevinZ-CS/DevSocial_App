@@ -19,7 +19,8 @@ RUN npm install
 COPY . .
 
 # Set the backend URL for production
-ENV REACT_APP_BACKEND_URL='https://<devsocial-api>.onrender.com/api/'
+# ENV REACT_APP_BACKEND_URL='https://<devsocial-api>.onrender.com/api/'
+ENV REACT_APP_BACKEND_URL='http://backend:8000/api/'
 
 # In the frontend Dockerfile, the REACT_APP_BACKEND_URL environment variable is set to the URL of the production backend. This URL would need to be specified by you and would depend on where you are hosting your production backend.
 # For example, if you are hosting your backend on Heroku, the URL might look something like https://your-app-name.herokuapp.com/.
