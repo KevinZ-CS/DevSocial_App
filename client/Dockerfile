@@ -12,6 +12,9 @@ RUN apk add --no-cache \
     dialog \
     libterm-readline-gnu
 
+# Set DEBIAN_FRONTEND to noninteractive during the build
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Install app dependencies
 RUN npm install
 
