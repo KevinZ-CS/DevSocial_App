@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM python:3.8-slim-buster
 
+# Install debconf-utils to fix potential errors
+RUN apt-get update && apt-get install -y debconf-utils
+
 # Set the working directory to /app
 WORKDIR /devsocial_api
 
