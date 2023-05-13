@@ -251,7 +251,8 @@ return (
         width="100%"
         alt="post"
         style={{ borderRadius: "0rem", marginTop: "0.75rem", maxHeight: '50rem', objectFit: "cover" }}
-        src={`/api/${picturePath}`}
+        // src={`/api/${picturePath}`}
+        src={`/api${picturePath}`}
       /> 
       </Typography>
 

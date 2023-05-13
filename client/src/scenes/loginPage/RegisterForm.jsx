@@ -74,7 +74,6 @@ const handleSubmit = async (values, onSubmitProps) => {
 
     const data = await response.json();
     if (response.ok) {
-        console.log(data) 
         onSubmitProps.resetForm(); 
         if (data) {
             setPageType("login");

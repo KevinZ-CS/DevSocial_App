@@ -9,7 +9,8 @@ return (
       width={size}
       height={size}
       alt="user"
-      src={`/api/${image}`} 
+      // src={`/api/${image}`} 
+      src={`/api${image}`} 
     />
   </Box>
   );

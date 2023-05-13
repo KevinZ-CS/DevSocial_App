@@ -65,7 +65,8 @@ class User(AbstractBaseUser):
         blank=False,
         null=False,
     )
-    image = models.ImageField(upload_to='images/', blank=False, null=False, storage=S3Boto3Storage())
+    image = models.ImageField(upload_to='images/', blank=False, null=False)
+    # image = models.ImageField(upload_to='images/', blank=False, null=False, storage=S3Boto3Storage())
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

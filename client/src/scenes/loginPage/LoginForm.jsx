@@ -65,6 +65,10 @@ const response = await fetch(
     }
 };
 
+// function handleDemoClick() {
+//     setEmail("test@gmail.com")
+//     setPassword("TestAccount12!")
+//     }
 
 return (
 <Formik
@@ -79,6 +83,7 @@ return (
     handleChange,
     handleSubmit,
     resetForm,
+    setFieldValue,
     }) => (
     <form onSubmit={handleSubmit}> 
         <Box
@@ -136,6 +141,29 @@ return (
             LOGIN
         {/* {isLogin ? "LOGIN" : "REGISTER"} */}
         </Button>
+
+        <Button
+            fullWidth
+            onClick={() => {
+                setFieldValue("email", "test@gmail.com"); // Set email value
+                setFieldValue("password", "TestAccount12!"); // Set password value
+              }}
+            type="submit"
+            sx={{
+            m: "0rem 0rem 2rem 0rem", 
+            p: "1rem", 
+            backgroundColor: palette.primary.main,
+            color: palette.background.alt,
+            "&:hover": { 
+                color: palette.primary.alt,
+                backgroundColor: palette.primary.dark
+            },
+            }}
+        >
+            DEMO LOGIN
+        {/* {isLogin ? "LOGIN" : "REGISTER"} */}
+        </Button>
+
 
         <Typography
             onClick={() => {
