@@ -15,7 +15,7 @@ RUN npm run build
 
 # Nginx stage
 FROM nginx:latest as nginx-build
-COPY devsocial_api/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-build /app/client/build /var/www/client
 
 # Main container stage
