@@ -28,5 +28,4 @@ COPY --from=frontend-build /app/client/build /var/www/client
 # Set the necessary environment variables, expose ports, and other configurations
 # ...
 
-# Start the backend server and Nginx
-CMD ["gunicorn", "devsocial_api.wsgi:application", "--bind", "0.0.0.0:8000"]
+
