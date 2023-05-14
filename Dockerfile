@@ -20,10 +20,10 @@ COPY . .
 COPY /devsocial_api/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
-EXPOSE 8000
+
 
 # Nginx stage
-FROM nginx:latest
+FROM nginx:1.23.3
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-build /devsocial_app/client/build /var/www/client
 COPY --from=backend-build /devsocial_app/devsocial_api/nginx/nginx.conf /etc/nginx/conf.d/default.conf
