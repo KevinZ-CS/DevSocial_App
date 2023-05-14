@@ -23,6 +23,7 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Nginx stage
 FROM nginx:latest
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-build /devsocial_app/client/build /var/www/client
 COPY --from=backend-build /devsocial_app/devsocial_api/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
