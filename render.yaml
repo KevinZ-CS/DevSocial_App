@@ -1,68 +1,42 @@
 services:
-  frontend:
+  - name: frontend
     build:
       context: ./client
       dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    environment:
-      - REACT_APP_API_URL=http://backend:8000/api/
-    networks:
-      - app-network
+    volumeMounts:
+      - name: react_build
+        path: /client/build
 
-  backend:
+  - name: backend
     build:
       context: ./devsocial_api
       dockerfile: Dockerfile
-    command: gunicorn devsocial_api.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - static-data:/app/static
-    expose:
-      - "8000"
-    depends_on:
-      - db
-    environment:
-      - DJANGO_SETTINGS_MODULE=devsocial_api.settings.production
-      - SECRET_KEY=${SECRET_KEY}
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_HOST=db
-    networks:
-      - app-network
+    env:
+      - key: DJANGO_SETTINGS_MODULE
+        value: "devsocial_api.production"
+    envFrom:
+      - secret: env-variables
+    port: 8000
 
-  nginx:
+  - name: nginx
     image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - react_build:/var/www/client
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - app-network
-
-  volumes:
-    react_build:
-
-  db:
-    image: postgres:latest
-    volumes:
-      - db-data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    networks:
-      - app-network
+    mounts:
+      - type: BIND
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        readOnly: true
+      - name: react_build
+        path: /var/www/client
+    port: 80
 
 volumes:
-  db-data:
-  static-data:
+  - name: react_build
 
-networks:
-  app-network:
+secrets:
+  - name: env-variables
+    from:
+      - type: env
+        name: SECRET_KEY
+      - type: env
+        name: DATABASE_URL
+

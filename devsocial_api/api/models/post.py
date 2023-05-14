@@ -18,8 +18,8 @@ class Post(models.Model):
         blank=False, 
         null=False,
     )
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
-    # image = models.ImageField(upload_to='images/', blank=True, null=True, storage=S3Boto3Storage())
+    # image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True, storage=S3Boto3Storage())
 
     created_at = models.DateTimeField(auto_now_add=True)
     
