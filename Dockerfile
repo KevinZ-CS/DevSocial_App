@@ -1,40 +1,33 @@
-# Stage 1: Build the frontend
-FROM node:14-alpine AS frontend
-
+# Frontend stage
+FROM node:14-alpine as frontend-build
 WORKDIR /devsocial_app/client
-
 COPY client/package*.json ./
-
 RUN npm install
-
 COPY . .
-
 RUN npm run build
 
-# Stage 2: Build the backend
-FROM python:3.8.9-slim-buster AS backend
 
+# Backend stage
+FROM python:3.8.9-slim-buster as backend-build
 ENV PYTHONUNBUFFERED 1
-
 RUN apt-get update && apt-get install -y build-essential
-
 WORKDIR /devsocial_app/devsocial_api
-
-COPY devsocial_api/requirements.txt .
-
+COPY devsocial_api/requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
-
+ENV DJANGO_SETTINGS_MODULE=devsocial_api.production
 COPY . .
-
 COPY /devsocial_api/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Stage 3: Final image
-FROM backend AS final
-
-COPY --from=frontend /client/build /var/www/client
-
-# Set the environment variable for Django production settings
-ENV DJANGO_SETTINGS_MODULE=devsocial_api.production
-
 ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Nginx stage
+FROM nginx:latest
+COPY --from=frontend-build /devsocial_app/client/build /var/www/client
+COPY --from=backend-build /devsocial_app/devsocial_api/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy other necessary files for backend
+COPY --from=backend-build /devsocial_app/devsocial_api/ /var/www/backend
+
+# Expose ports and start Nginx
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
