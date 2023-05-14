@@ -11,6 +11,7 @@ WORKDIR /app/client
 COPY client/package*.json ./
 RUN npm ci --silent
 COPY client/ ./
+ENV CI=false 
 RUN npm run build
 
 # Nginx stage
