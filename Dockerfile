@@ -2,8 +2,9 @@
 FROM node:14-alpine as frontend-build
 WORKDIR /devsocial_app/client
 COPY client/package*.json ./
-RUN npm install
-COPY . .
+RUN npm ci --silent
+COPY client/ ./
+ENV CI=false 
 RUN npm run build
 
 
