@@ -16,15 +16,15 @@ COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Set the environment variable for Django production settings
-ENV DJANGO_SETTINGS_MODULE=devsocial_api.production
+# ENV DJANGO_SETTINGS_MODULE=devsocial_api.production
 
 # Copy the rest of the application code into the container
 COPY . .
 
 # Copy the docker-entrypoint.sh script into the container
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# COPY docker-entrypoint.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 
 # Set the entrypoint to the docker-entrypoint.sh script
-ENTRYPOINT ["docker-entrypoint.sh"]
+# ENTRYPOINT ["docker-entrypoint.sh"]

@@ -31,8 +31,18 @@ services:
       - backend
       - frontend
 
+  db:
+   image: postgres:latest
+   volumes:
+     - db-data:/var/lib/postgresql/data/
+   environment:
+     - POSTGRES_DB=devsocial_db
+     - POSTGRES_USER=kzheng
+     - POSTGRES_PASSWORD=${PASSWORD_DB}
+
 volumes:
   react_build:
+  db-data:
 
 
 
