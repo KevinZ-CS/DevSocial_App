@@ -13,7 +13,7 @@ import Comment from "components/Comment";
 import MoreOptionsDialog from "components/MoreOptionsDialog";
 import EditPostForm from "components/EditPostForm";
 import getCookie from "utils/GetCookies";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogout } from "state/authReducer";
 import { toast } from 'react-toastify';
@@ -33,6 +33,7 @@ const PostWidget = ({
     demo,
   }) => {
 
+  
 
 const { palette } = useTheme();
 const main = palette.neutral.main;
@@ -44,8 +45,17 @@ const background = palette.background.alt
 const dispatch = useDispatch();
 const [isComments, setIsComments] = useState(false); 
 const [comment, setComment] = useState('');
-const [displayComments, setDisplayComments] = useState(comments);
-const [like, setLike] = useState(likes);
+const [displayComments, setDisplayComments] = useState([]);
+const [like, setLike] = useState([]);
+
+useEffect(() => {
+  setDisplayComments(comments)
+}, [comments])
+
+useEffect(() => {
+  setLike(likes)
+}, [likes])
+
 
 const csrftoken = getCookie('csrftoken');
 const loggedInUser = useSelector((state) => state.auth.user);

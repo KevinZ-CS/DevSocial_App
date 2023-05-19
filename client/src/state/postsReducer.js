@@ -21,6 +21,7 @@ export const postsSlice = createSlice({
   },
     setPostsDisplay: (state, action) => {
       state.postsDisplay = action.payload
+
   },
   updatePosts: (state, action) => {
       const updatedPosts = state.posts.map((post) => {

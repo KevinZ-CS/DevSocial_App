@@ -36,7 +36,7 @@ const getPosts = async () => {
       (post.userData.first_name + post.userData.last_name)
       .toLowerCase()
       .includes(searchKeyword.split(' ').join('').toLowerCase())
-      )))
+      ))) 
   } else {
       console.log(response)
     }
@@ -45,6 +45,7 @@ const getPosts = async () => {
       dispatch(setLogout())
     }
   };
+
 
 const getUserPosts = async () => {
   if (token && tokenExpiration && Date.now() < tokenExpiration && refreshToken && refreshTokenExpiration && Date.now() < refreshTokenExpiration) {
