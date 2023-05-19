@@ -32,6 +32,8 @@ const dispatch = useDispatch();
 const { palette } = useTheme();
 const mediumMain = palette.neutral.mediumMain;
 const medium = palette.neutral.medium;
+const neutral = palette.neutral.dark;
+const background = palette.background.alt
 
 const [isImage, setIsImage] = useState(false); 
 const [image, setImage] = useState(null); 
@@ -88,6 +90,10 @@ const handlePost = async () => {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: true,
+        style: {
+          backgroundColor: background,
+          color: neutral,
+        },
       });
   } else {
     console.log(response)
